@@ -157,9 +157,13 @@ app.get('/api/matches', (_req, res) => {
 });
 
 app.post('/api/matches', requireAuth, (req, res) => {
-  const { winnerId, loserId } = req.body;
+  const { winnerId, loserId, ballsLeft } = req.body;
   if (!winnerId || !loserId) return res.status(400).json({ error: 'Both players required' });
   if (winnerId === loserId) return res.status(400).json({ error: 'Players must be different' });
+  const balls = Number(ballsLeft);
+  if (!Number.isInteger(balls) || balls < 0 || balls > 7) {
+    return res.status(400).json({ error: 'Balls left must be 0 to 7' });
+  }
   const db = readDB();
   const winner = db.players.find(p => p.id === winnerId);
   const loser = db.players.find(p => p.id === loserId);
@@ -172,6 +176,7 @@ app.post('/api/matches', requireAuth, (req, res) => {
     winnerEloBefore: winner.elo,
     loserEloBefore: loser.elo,
     eloChange: change,
+    ballsLeft: balls,
     playedAt: new Date().toISOString(),
   };
   winner.elo += change;

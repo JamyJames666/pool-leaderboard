@@ -240,6 +240,84 @@
     .result-preview .elo-gain { color: var(--green); font-weight: 600; }
     .result-preview .elo-loss { color: var(--danger); font-weight: 600; }
 
+    /* --- BALL SELECTOR --- */
+    .ball-selector { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ball-btn {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      font-size: 13px; font-weight: 800;
+      cursor: pointer;
+      color: #fff;
+      transition: all 0.15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      outline: none;
+      position: relative;
+    }
+    .ball-btn::after {
+      content: '';
+      position: absolute;
+      top: 6px; left: 10px;
+      width: 10px; height: 6px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 50%;
+      transform: rotate(-35deg);
+    }
+    .ball-btn:hover { transform: scale(1.1); box-shadow: 0 4px 14px rgba(0,0,0,0.4); }
+    .ball-btn.selected { border-color: #fff; transform: scale(1.15); box-shadow: 0 0 0 3px rgba(255,255,255,0.25), 0 4px 14px rgba(0,0,0,0.5); }
+    .ball-0  { background: #374151; }
+    .ball-1  { background: #ca8a04; }
+    .ball-2  { background: #2563eb; }
+    .ball-3  { background: #dc2626; }
+    .ball-4  { background: #7c3aed; }
+    .ball-5  { background: #ea580c; }
+    .ball-6  { background: #16a34a; }
+    .ball-7  { background: #92400e; }
+    .ball-label { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .score-msg { font-size: 13px; color: var(--gold); font-weight: 600; min-height: 20px; margin-top: 4px; }
+
+    /* --- ELO EXPLAINER --- */
+    .elo-explainer {
+      margin-top: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .elo-explainer summary {
+      padding: 14px 18px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted2);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .elo-explainer summary::-webkit-details-marker { display: none; }
+    .elo-explainer summary::after { content: '›'; font-size: 16px; transition: transform 0.2s; }
+    .elo-explainer[open] summary::after { transform: rotate(90deg); }
+    .elo-explainer summary:hover { color: var(--text); }
+    .elo-body { padding: 0 18px 18px; }
+    .elo-body p { font-size: 13px; color: var(--muted2); line-height: 1.6; margin-bottom: 12px; }
+    .elo-examples { display: grid; gap: 8px; }
+    .elo-example {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+    }
+    .elo-example-title { font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .elo-example-detail { color: var(--muted2); font-size: 12px; line-height: 1.5; }
+    .elo-example-detail .g { color: var(--green); font-weight: 600; }
+    .elo-example-detail .r { color: var(--danger); font-weight: 600; }
+
+    /* --- RESULT SCORE --- */
+    .result-score { font-size: 13px; color: var(--muted2); margin-bottom: 6px; }
+    .result-score-msg { font-size: 15px; font-weight: 700; color: var(--gold); margin-bottom: 20px; }
+
     /* --- SEARCHABLE DROPDOWN --- */
     .select-wrap { position: relative; }
     .dropdown-list {
@@ -408,6 +486,8 @@
     <div class="result-defeated">defeated</div>
     <div class="result-loser-name" id="resultLoserName"></div>
     <div class="result-elo-loss" id="resultEloLoss"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-score-msg" id="resultScoreMsg"></div>
     <div class="result-dismiss">tap anywhere to dismiss</div>
     <div class="result-progress"><div class="result-progress-bar" id="resultProgressBar"></div></div>
   </div>
@@ -475,6 +555,31 @@
           </table>
         </div>
       </div>
+
+      <details class="elo-explainer">
+        <summary>How does ELO work?</summary>
+        <div class="elo-body">
+          <p>ELO is a rating system that adjusts based on the expected outcome of each match. Beating someone ranked much higher than you earns more points than beating someone lower. Every player starts at 1000.</p>
+          <div class="elo-examples">
+            <div class="elo-example">
+              <div class="elo-example-title">Even match — 1000 vs 1000</div>
+              <div class="elo-example-detail">Both have equal chances. Winner gets <span class="g">+16</span>, loser gets <span class="r">-16</span>. Standard swing for an even game.</div>
+            </div>
+            <div class="elo-example">
+              <div class="elo-example-title">Heavy favourite wins — 1300 vs 900</div>
+              <div class="elo-example-detail">Expected outcome. Favourite wins <span class="g">+4</span>, loser drops <span class="r">-4</span>. Not much at stake when the better player wins.</div>
+            </div>
+            <div class="elo-example">
+              <div class="elo-example-title">Underdog wins — 900 vs 1300</div>
+              <div class="elo-example-detail">Surprise result! Underdog gains <span class="g">+28</span>, favourite loses <span class="r">-28</span>. Big swings reward upsets.</div>
+            </div>
+            <div class="elo-example">
+              <div class="elo-example-title">Slightly above average — 1100 vs 1000</div>
+              <div class="elo-example-detail">Favourite wins <span class="g">+13</span>, drops <span class="r">-13</span>. Slight edge means slightly reduced reward for the expected winner.</div>
+            </div>
+          </div>
+        </div>
+      </details>
     </div>
 
     <!-- RECORD MATCH TAB -->
@@ -500,6 +605,22 @@
               <div class="dropdown-list hidden" id="loserDropdown"></div>
             </div>
             <input type="hidden" id="loserId">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Loser's balls remaining</label>
+            <div class="ball-selector" id="ballSelector">
+              <button type="button" class="ball-btn ball-0" data-balls="0">0</button>
+              <button type="button" class="ball-btn ball-1" data-balls="1">1</button>
+              <button type="button" class="ball-btn ball-2" data-balls="2">2</button>
+              <button type="button" class="ball-btn ball-3" data-balls="3">3</button>
+              <button type="button" class="ball-btn ball-4" data-balls="4">4</button>
+              <button type="button" class="ball-btn ball-5" data-balls="5">5</button>
+              <button type="button" class="ball-btn ball-6" data-balls="6">6</button>
+              <button type="button" class="ball-btn ball-7" data-balls="7">7</button>
+            </div>
+            <div class="ball-label">0 = loser already cleared theirs (closest game) &nbsp;·&nbsp; 7 = winner ran the table</div>
+            <div class="score-msg" id="scoreMsgEl"></div>
+            <input type="hidden" id="ballsLeft">
           </div>
           <div id="matchPreview" style="display:none"></div>
           <button class="btn btn-primary" id="submitMatch" disabled style="width:fit-content">Record Result</button>
@@ -627,6 +748,24 @@
   let players = [];
   let editingPlayerId = null;
   let resultDismissTimer = null;
+  let selectedBalls = null;
+
+  // --- SCORE MESSAGES ---
+  const SCORE_MESSAGES = {
+    0: ["Photo finish!", "Couldn't be closer!", "Last ball standing!", "Down to the wire!", "Squeaky bum time!", "The slimmest of margins!"],
+    1: ["One ball away from glory!", "Just pipped at the post!", "Nearly had it!", "Heartbreaker!", "So close it hurts!", "One ball separated them!"],
+    2: ["Went down swinging!", "A hard-fought game!", "Two balls between them!", "Almost turned it around!", "Fought till the end!"],
+    3: ["Could've gone either way!", "A proper game of pool!", "Right in the mix!", "Decent contest!", "Both played well!"],
+    4: ["Comfortable win!", "Controlled display!", "Four balls to the good!", "Solid performance!", "Made it count!"],
+    5: ["Dominant!", "Cruising to victory!", "Five up!", "Barely troubled!", "Took it to them!"],
+    6: ["Clinical!", "Ruthless!", "Six balls clear!", "Barely broke a sweat!", "Schooled!"],
+    7: ["PERFECT RUN!", "MAXIMUM DOMINANCE!", "Didn't pot a single one!", "Flawless from start to finish!", "The full 7! Unreal!"],
+  };
+
+  function getScoreMsg(balls) {
+    const msgs = SCORE_MESSAGES[balls] || [];
+    return msgs[Math.floor(Math.random() * msgs.length)] || '';
+  }
 
   // --- TOAST ---
   function toast(msg, type = 'success') {
@@ -649,11 +788,20 @@
   }
 
   // --- MATCH RESULT ANIMATION ---
-  function showResult(winnerName, loserName, eloChange) {
+  function showResult(winnerName, loserName, eloChange, ballsLeft) {
     document.getElementById('resultWinnerName').textContent = winnerName;
     document.getElementById('resultLoserName').textContent = loserName;
     document.getElementById('resultEloGain').textContent = `+${eloChange} ELO`;
     document.getElementById('resultEloLoss').textContent = `-${eloChange} ELO`;
+    const scoreEl = document.getElementById('resultScore');
+    const msgEl = document.getElementById('resultScoreMsg');
+    if (ballsLeft !== undefined && ballsLeft !== null) {
+      scoreEl.textContent = ballsLeft === 0 ? 'Loser had no balls left' : `${ballsLeft} ball${ballsLeft !== 1 ? 's' : ''} remaining`;
+      msgEl.textContent = getScoreMsg(ballsLeft);
+    } else {
+      scoreEl.textContent = '';
+      msgEl.textContent = '';
+    }
 
     // Reset progress bar animation by re-inserting the element
     const bar = document.getElementById('resultProgressBar');
@@ -838,6 +986,7 @@
             <td>
               <span class="elo-change-badge gain">+${m.eloChange}</span>
               <span class="elo-change-badge loss" style="margin-left:4px">-${m.eloChange}</span>
+              ${m.ballsLeft !== undefined ? `<span style="margin-left:6px;font-size:11px;color:var(--muted)">${m.ballsLeft} ball${m.ballsLeft !== 1 ? 's' : ''} left</span>` : ''}
             </td>
             <td class="match-date">${dateStr} ${timeStr}</td>
             ${adminBtn}
@@ -969,6 +1118,18 @@
     if (e.key === 'Enter') document.getElementById('addPlayerBtn').click();
   });
 
+  // --- BALL SELECTOR ---
+  document.querySelectorAll('.ball-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ball-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedBalls = Number(btn.dataset.balls);
+      document.getElementById('ballsLeft').value = selectedBalls;
+      document.getElementById('scoreMsgEl').textContent = getScoreMsg(selectedBalls);
+      updateMatchPreview();
+    });
+  });
+
   // --- SEARCHABLE DROPDOWNS (with inline create) ---
   function makeDropdown(searchId, dropdownId, hiddenId, otherHiddenId) {
     const searchEl = document.getElementById(searchId);
@@ -1055,7 +1216,7 @@
     const previewEl = document.getElementById('matchPreview');
     const submitBtn = document.getElementById('submitMatch');
 
-    if (!wId || !lId || wId === lId) {
+    if (!wId || !lId || wId === lId || selectedBalls === null) {
       previewEl.style.display = 'none';
       submitBtn.disabled = true;
       return;
@@ -1069,11 +1230,16 @@
     const expected = 1 / (1 + Math.pow(10, (loser.elo - winner.elo) / 400));
     const change = Math.max(1, Math.round(K * (1 - expected)));
 
+    const ballsText = selectedBalls === 0
+      ? 'Loser had no balls left'
+      : `${selectedBalls} ball${selectedBalls !== 1 ? 's' : ''} remaining`;
+
     previewEl.innerHTML = `
       <div class="result-preview">
         <strong>${esc(winner.name)}</strong> (${winner.elo}) defeats <strong>${esc(loser.name)}</strong> (${loser.elo})<br>
         <span class="elo-gain">+${change} ELO</span> for ${esc(winner.name)} &nbsp;·&nbsp;
-        <span class="elo-loss">-${change} ELO</span> for ${esc(loser.name)}
+        <span class="elo-loss">-${change} ELO</span> for ${esc(loser.name)}<br>
+        <span style="color:var(--muted2)">${ballsText}</span>
       </div>`;
     previewEl.style.display = '';
     submitBtn.disabled = false;
@@ -1090,15 +1256,19 @@
     const loser = players.find(p => p.id === loserId);
 
     try {
-      const res = await api('POST', '/api/matches', { winnerId, loserId });
+      const res = await api('POST', '/api/matches', { winnerId, loserId, ballsLeft: selectedBalls });
 
       // Reset form
       ['winnerSearch', 'loserSearch'].forEach(id => document.getElementById(id).value = '');
       ['winnerId', 'loserId'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('matchPreview').style.display = 'none';
+      document.getElementById('scoreMsgEl').textContent = '';
+      document.querySelectorAll('.ball-btn').forEach(b => b.classList.remove('selected'));
+      selectedBalls = null;
+      document.getElementById('ballsLeft').value = '';
 
       // Show result animation
-      showResult(winner?.name ?? 'Winner', loser?.name ?? 'Loser', res.match.eloChange);
+      showResult(winner?.name ?? 'Winner', loser?.name ?? 'Loser', res.match.eloChange, res.match.ballsLeft);
 
       // Refresh players for updated ELOs
       players = await api('GET', '/api/players');
