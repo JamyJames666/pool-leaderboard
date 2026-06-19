@@ -280,6 +280,12 @@
     .elo-change-badge.loss { background: var(--danger-dim); color: var(--danger); }
     .match-date { color: var(--muted); font-size: 12px; white-space: nowrap; }
 
+    /* --- ADMIN TAB --- */
+    .admin-section { margin-bottom: 24px; }
+    .admin-section-title { font-size: 13px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .admin-section-title::before { content: ''; display: inline-block; width: 3px; height: 14px; background: var(--gold); border-radius: 2px; }
+    .danger-zone { border: 1px solid rgba(239,68,68,0.2); border-radius: var(--radius); padding: 16px 20px; background: rgba(239,68,68,0.04); }
+
     /* --- PLAYERS TAB --- */
     .player-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
     .player-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -439,6 +445,7 @@
       <button class="tab-btn" data-tab="record">Record Match</button>
       <button class="tab-btn" data-tab="history">Match History</button>
       <button class="tab-btn" data-tab="players">Players</button>
+      <button class="tab-btn" data-tab="admin" id="adminTab" style="display:none;color:var(--gold)">&#9881; Admin</button>
     </div>
   </header>
 
@@ -544,6 +551,72 @@
         </div>
       </div>
     </div>
+
+    <!-- ADMIN TAB -->
+    <div class="tab-content" id="tab-admin">
+      <div class="section-header">
+        <span class="section-title" style="color:var(--gold)">Admin Panel</span>
+      </div>
+
+      <!-- Players management -->
+      <div class="admin-section">
+        <div class="admin-section-title">Players</div>
+        <div class="card" style="margin-bottom:10px">
+          <div class="add-player-form">
+            <input type="text" id="adminNewPlayerName" placeholder="New player name" maxlength="40">
+            <button class="btn btn-primary" id="adminAddPlayerBtn">Add Player</button>
+          </div>
+        </div>
+        <div class="card" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>ELO</th>
+                  <th>W / L</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="adminPlayerBody">
+                <tr><td colspan="4" class="loading-row"><span class="spinner"></span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Match history management -->
+      <div class="admin-section">
+        <div class="admin-section-title">Match History</div>
+        <div class="card" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Result</th>
+                  <th>ELO</th>
+                  <th>Date</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="adminMatchBody">
+                <tr><td colspan="4" class="loading-row"><span class="spinner"></span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="admin-section">
+        <div class="admin-section-title">Danger Zone</div>
+        <div class="danger-zone">
+          <p style="font-size:13px;color:var(--muted2);margin-bottom:12px">Permanently delete all match history. Player ELOs will reset to 1000. This cannot be undone.</p>
+          <button class="btn btn-danger" id="clearMatchesBtn">Clear All Matches</button>
+        </div>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -629,8 +702,10 @@
       document.getElementById('adminTopBar').classList.add('visible');
       document.getElementById('adminHistoryCol').style.display = '';
       document.getElementById('addPlayerCard').style.display = '';
+      document.getElementById('adminTab').style.display = '';
     } else {
       document.getElementById('addPlayerCard').style.display = token ? '' : 'none';
+      document.getElementById('adminTab').style.display = 'none';
     }
   }
 
@@ -689,6 +764,7 @@
       if (btn.dataset.tab === 'history') loadHistory();
       if (btn.dataset.tab === 'players') loadPlayers();
       if (btn.dataset.tab === 'record') loadPlayersForDropdowns();
+      if (btn.dataset.tab === 'admin') loadAdminPanel();
     });
   });
 
@@ -1031,6 +1107,117 @@
     } finally {
       btn.disabled = false;
       btn.textContent = 'Record Result';
+    }
+  });
+
+  // --- ADMIN PANEL ---
+  async function loadAdminPanel() {
+    await Promise.all([loadAdminPlayers(), loadAdminMatches()]);
+  }
+
+  async function loadAdminPlayers() {
+    const tbody = document.getElementById('adminPlayerBody');
+    try {
+      const data = await api('GET', '/api/players');
+      players = data;
+      if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state" style="padding:24px">No players yet</div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = [...data].sort((a, b) => b.elo - a.elo).map(p => `
+        <tr id="adminRow-${p.id}">
+          <td><strong>${esc(p.name)}</strong></td>
+          <td>${p.elo}</td>
+          <td class="wl-cell">${p.wins} / ${p.losses}</td>
+          <td>
+            <div style="display:flex;gap:4px">
+              <button class="btn btn-secondary btn-sm" onclick="adminRenamePlayer('${p.id}','${esc(p.name)}')">Rename</button>
+              <button class="btn btn-danger btn-sm btn-icon" onclick="deletePlayer('${p.id}')" title="Delete">✕</button>
+            </div>
+          </td>
+        </tr>`).join('');
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="4" style="color:var(--danger);padding:16px">${esc(err.message)}</td></tr>`;
+    }
+  }
+
+  async function loadAdminMatches() {
+    const tbody = document.getElementById('adminMatchBody');
+    try {
+      const data = await api('GET', '/api/matches');
+      if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state" style="padding:24px">No matches yet</div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = data.map(m => {
+        const date = new Date(m.playedAt);
+        const dateStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+        return `
+          <tr>
+            <td><strong>${esc(m.winnerName)}</strong> <span style="color:var(--muted)">vs</span> ${esc(m.loserName)}</td>
+            <td><span class="elo-change-badge gain">+${m.eloChange}</span></td>
+            <td class="match-date">${dateStr}</td>
+            <td><button class="btn btn-danger btn-sm btn-icon" onclick="adminDeleteMatch('${m.id}')" title="Delete">✕</button></td>
+          </tr>`;
+      }).join('');
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="4" style="color:var(--danger);padding:16px">${esc(err.message)}</td></tr>`;
+    }
+  }
+
+  async function adminDeleteMatch(id) {
+    if (!confirm('Delete this match? ELO will be recalculated.')) return;
+    try {
+      await api('DELETE', `/api/matches/${id}`);
+      toast('Match deleted');
+      loadAdminMatches();
+      loadLeaderboard();
+    } catch (err) {
+      toast(err.message, 'error');
+    }
+  }
+
+  function adminRenamePlayer(id, currentName) {
+    const newName = prompt('New name:', currentName);
+    if (!newName || newName.trim() === currentName) return;
+    api('PUT', `/api/players/${id}`, { name: newName.trim() })
+      .then(() => { toast('Player renamed'); loadAdminPlayers(); })
+      .catch(err => toast(err.message, 'error'));
+  }
+
+  document.getElementById('adminAddPlayerBtn').addEventListener('click', async () => {
+    const input = document.getElementById('adminNewPlayerName');
+    const name = input.value.trim();
+    if (!name) return;
+    try {
+      const player = await api('POST', '/api/players', { name });
+      players.push(player);
+      input.value = '';
+      toast(`${name} added`);
+      loadAdminPlayers();
+    } catch (err) {
+      toast(err.message, 'error');
+    }
+  });
+
+  document.getElementById('adminNewPlayerName').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('adminAddPlayerBtn').click();
+  });
+
+  document.getElementById('clearMatchesBtn').addEventListener('click', async () => {
+    if (!confirm('Delete ALL match history? ELOs will reset to 1000. This cannot be undone.')) return;
+    if (!confirm('Are you sure? This is permanent.')) return;
+    try {
+      const matches = await api('GET', '/api/matches');
+      await matches.reduce(async (chain, m) => {
+        await chain;
+        await api('DELETE', `/api/matches/${m.id}`);
+      }, Promise.resolve());
+      toast('All matches cleared', 'info');
+      loadAdminPanel();
+      loadLeaderboard();
+    } catch (err) {
+      toast(err.message, 'error');
     }
   });
 
