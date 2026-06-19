@@ -36,6 +36,30 @@
       min-height: 100vh;
     }
 
+    /* --- ADMIN RIBBON --- */
+    .admin-ribbon {
+      display: none;
+      background: rgba(245,158,11,0.08);
+      border-bottom: 1px solid rgba(245,158,11,0.2);
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding: 5px;
+    }
+    .admin-ribbon.visible { display: block; }
+    .admin-top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), #fb923c, var(--gold));
+      z-index: 999;
+      display: none;
+    }
+    .admin-top-bar.visible { display: block; }
+
     /* --- HEADER --- */
     .header {
       border-bottom: 1px solid var(--border);
@@ -71,7 +95,7 @@
       font-size: 12px;
       color: var(--muted);
     }
-    .auth-badge .role-pill {
+    .role-pill {
       padding: 2px 8px;
       border-radius: 20px;
       font-weight: 600;
@@ -111,7 +135,6 @@
       margin: 0 auto;
       padding: 0 16px;
       display: flex;
-      gap: 0;
       overflow-x: auto;
     }
     .tab-btn {
@@ -130,11 +153,7 @@
     .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
 
     /* --- CONTENT --- */
-    .main {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 24px 16px;
-    }
+    .main { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
@@ -177,49 +196,24 @@
     input::placeholder { color: var(--muted); }
 
     /* --- CARDS --- */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-    }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
     .card + .card { margin-top: 12px; }
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted2);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 16px;
-    }
+    .card-title { font-size: 13px; font-weight: 600; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
 
     /* --- TABLE --- */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
-    th {
-      text-align: left;
-      padding: 8px 12px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 1px solid var(--border);
-    }
-    td {
-      padding: 11px 12px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
+    th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+    td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: var(--surface2); }
 
     /* --- LEADERBOARD --- */
     .rank-cell { width: 48px; text-align: center; }
     .rank-num { font-size: 13px; font-weight: 700; color: var(--muted); }
-    .rank-1 .rank-badge { color: var(--gold); font-size: 18px; }
-    .rank-2 .rank-badge { color: var(--silver); font-size: 18px; }
-    .rank-3 .rank-badge { color: var(--bronze); font-size: 18px; }
+    .rank-1 .rank-badge { font-size: 18px; }
+    .rank-2 .rank-badge { font-size: 18px; }
+    .rank-3 .rank-badge { font-size: 18px; }
     .player-name { font-weight: 600; font-size: 14px; }
     .elo-cell { font-weight: 700; font-size: 15px; }
     .elo-up { color: var(--green); }
@@ -231,9 +225,7 @@
     .winrate-fill { height: 100%; border-radius: 2px; background: var(--green); transition: width 0.3s; }
     .winrate-text { font-size: 12px; color: var(--muted2); min-width: 30px; text-align: right; }
     .form-dots { display: flex; gap: 3px; }
-    .form-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-    }
+    .form-dot { width: 8px; height: 8px; border-radius: 50%; }
     .form-dot.W { background: var(--green); }
     .form-dot.L { background: var(--danger); }
     .form-dot.empty { background: var(--border2); }
@@ -242,22 +234,8 @@
     .match-form { display: grid; gap: 16px; max-width: 480px; }
     .form-row { display: flex; flex-direction: column; gap: 6px; }
     .form-label { font-size: 12px; font-weight: 600; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.4px; }
-    .vs-divider {
-      text-align: center;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--muted);
-      letter-spacing: 1px;
-      padding: 4px 0;
-    }
-    .result-preview {
-      background: var(--green-glow);
-      border: 1px solid rgba(34,197,94,0.25);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      font-size: 13px;
-      color: var(--muted2);
-    }
+    .vs-divider { text-align: center; font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1px; padding: 4px 0; }
+    .result-preview { background: var(--green-glow); border: 1px solid rgba(34,197,94,0.25); border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: var(--muted2); }
     .result-preview strong { color: var(--text); }
     .result-preview .elo-gain { color: var(--green); font-weight: 600; }
     .result-preview .elo-loss { color: var(--danger); font-weight: 600; }
@@ -272,7 +250,7 @@
       border: 1px solid var(--border2);
       border-radius: var(--radius);
       z-index: 50;
-      max-height: 200px;
+      max-height: 220px;
       overflow-y: auto;
       box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
@@ -287,6 +265,8 @@
     }
     .dropdown-item:hover { background: var(--surface); color: var(--green); }
     .dropdown-item .item-elo { font-size: 11px; color: var(--muted); }
+    .dropdown-item.create-item { color: var(--green); border-top: 1px solid var(--border); font-style: italic; }
+    .dropdown-item.create-item:hover { background: var(--green-glow); }
     .dropdown-empty { padding: 10px 12px; color: var(--muted); font-size: 13px; }
 
     /* --- MATCH HISTORY --- */
@@ -295,35 +275,14 @@
     .match-winner { font-weight: 600; color: var(--text); }
     .match-loser { color: var(--muted2); }
     .match-arrow { color: var(--muted); font-size: 12px; }
-    .elo-change-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      padding: 2px 7px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-    }
+    .elo-change-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 20px; font-size: 11px; font-weight: 600; }
     .elo-change-badge.gain { background: var(--green-glow); color: var(--green); }
     .elo-change-badge.loss { background: var(--danger-dim); color: var(--danger); }
     .match-date { color: var(--muted); font-size: 12px; white-space: nowrap; }
 
     /* --- PLAYERS TAB --- */
-    .player-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 10px;
-    }
-    .player-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
+    .player-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .player-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .player-card-info { flex: 1; min-width: 0; }
     .player-card-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .player-card-stats { font-size: 12px; color: var(--muted); margin-top: 2px; }
@@ -331,99 +290,122 @@
     .add-player-form { display: flex; gap: 8px; max-width: 360px; }
 
     /* --- LOGIN OVERLAY --- */
-    .login-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
+    .login-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; }
     .login-overlay.hidden { display: none; }
-    .login-box {
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      border-radius: 14px;
-      padding: 32px 28px;
-      width: 100%;
-      max-width: 360px;
-    }
+    .login-box { background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; padding: 32px 28px; width: 100%; max-width: 360px; }
     .login-icon { font-size: 40px; text-align: center; margin-bottom: 12px; }
     .login-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 4px; }
     .login-sub { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 24px; }
     .login-form { display: flex; flex-direction: column; gap: 12px; }
     .login-error { color: var(--danger); font-size: 13px; text-align: center; min-height: 20px; }
 
-    /* --- TOAST --- */
-    .toast-container {
+    /* --- MATCH RESULT OVERLAY --- */
+    .result-overlay {
       position: fixed;
-      top: 16px;
-      right: 16px;
-      z-index: 200;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(6px);
+      z-index: 150;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-      pointer-events: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      cursor: pointer;
     }
-    .toast {
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      pointer-events: auto;
-      animation: toastIn 0.2s ease;
-      backdrop-filter: blur(8px);
+    .result-overlay.hidden { display: none; }
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 40px 36px;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      animation: cardPop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+      overflow: hidden;
     }
+    @keyframes cardPop {
+      from { opacity: 0; transform: scale(0.75) translateY(24px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--green), #86efac, var(--green));
+    }
+    .result-trophy { font-size: 48px; margin-bottom: 8px; animation: trophyBounce 0.6s 0.3s cubic-bezier(0.34,1.56,0.64,1) both; }
+    @keyframes trophyBounce { from { transform: scale(0) rotate(-20deg); } to { transform: none; } }
+    .result-winner-name { font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .result-elo-gain { font-size: 15px; color: var(--green); font-weight: 700; margin-bottom: 20px; }
+    .result-defeated { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+    .result-loser-name { font-size: 18px; font-weight: 600; color: var(--muted2); margin-bottom: 4px; }
+    .result-elo-loss { font-size: 13px; color: var(--danger); font-weight: 600; margin-bottom: 24px; }
+    .result-dismiss { font-size: 12px; color: var(--muted); }
+    .result-progress {
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 3px;
+      background: var(--border2);
+      width: 100%;
+    }
+    .result-progress-bar {
+      height: 100%;
+      background: var(--muted);
+      width: 100%;
+      animation: progressDrain 4s linear forwards;
+    }
+    @keyframes progressDrain { to { width: 0%; } }
+
+    /* --- CONFETTI --- */
+    @keyframes confettiFall {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* --- TOAST --- */
+    .toast-container { position: fixed; top: 16px; right: 16px; z-index: 200; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+    .toast { padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; pointer-events: auto; animation: toastIn 0.2s ease; backdrop-filter: blur(8px); }
     .toast.success { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #86efac; }
     .toast.error { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
     .toast.info { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #ccc; }
     @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
 
     /* --- MISC --- */
-    .empty-state {
-      text-align: center;
-      padding: 48px 24px;
-      color: var(--muted);
-    }
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); }
     .empty-state p { font-size: 13px; margin-top: 8px; }
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      gap: 12px;
-    }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; }
     .section-title { font-size: 15px; font-weight: 700; }
-    .badge {
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      background: var(--surface2);
-      color: var(--muted2);
-      border: 1px solid var(--border2);
-    }
+    .badge { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--surface2); color: var(--muted2); border: 1px solid var(--border2); }
     .edit-inline { display: flex; gap: 6px; align-items: center; }
     .edit-inline input { width: 140px; padding: 5px 8px; font-size: 13px; }
-    .spinner {
-      width: 16px; height: 16px;
-      border: 2px solid var(--border2);
-      border-top-color: var(--green);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: inline-block;
-    }
+    .spinner { width: 16px; height: 16px; border: 2px solid var(--border2); border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .loading-row td { text-align: center; padding: 32px; color: var(--muted); }
   </style>
 </head>
 <body>
 
+<!-- Admin top accent bar -->
+<div class="admin-top-bar" id="adminTopBar"></div>
+
 <div class="toast-container" id="toastContainer"></div>
+
+<!-- Match result overlay -->
+<div class="result-overlay hidden" id="resultOverlay" onclick="closeResult()">
+  <div class="result-card" onclick="event.stopPropagation()">
+    <div class="result-trophy">🏆</div>
+    <div class="result-winner-name" id="resultWinnerName"></div>
+    <div class="result-elo-gain" id="resultEloGain"></div>
+    <div class="result-defeated">defeated</div>
+    <div class="result-loser-name" id="resultLoserName"></div>
+    <div class="result-elo-loss" id="resultEloLoss"></div>
+    <div class="result-dismiss">tap anywhere to dismiss</div>
+    <div class="result-progress"><div class="result-progress-bar" id="resultProgressBar"></div></div>
+  </div>
+</div>
 
 <!-- Login overlay -->
 <div class="login-overlay" id="loginOverlay">
@@ -440,11 +422,14 @@
 </div>
 
 <!-- Main app -->
-<div id="app" class="hidden" style="display:none">
+<div id="app" style="display:none">
+  <!-- Admin ribbon -->
+  <div class="admin-ribbon" id="adminRibbon">Admin Mode</div>
+
   <header class="header">
     <div class="header-inner">
       <div class="header-title"><span>🎱</span> Pool Leaderboard</div>
-      <div class="auth-badge">
+      <div class="auth-badge" id="authBadge">
         <span class="role-pill" id="rolePill"></span>
         <button class="btn-logout" id="logoutBtn">Sign out</button>
       </div>
@@ -491,11 +476,11 @@
         <span class="section-title">Record a Result</span>
       </div>
       <div class="card">
-        <div class="match-form" id="matchForm">
+        <div class="match-form">
           <div class="form-row">
             <label class="form-label">Winner</label>
-            <div class="select-wrap" id="winnerWrap">
-              <input type="text" class="player-search" id="winnerSearch" placeholder="Search player..." autocomplete="off">
+            <div class="select-wrap">
+              <input type="text" class="player-search" id="winnerSearch" placeholder="Search or create player..." autocomplete="off">
               <div class="dropdown-list hidden" id="winnerDropdown"></div>
             </div>
             <input type="hidden" id="winnerId">
@@ -503,8 +488,8 @@
           <div class="vs-divider">DEFEATED</div>
           <div class="form-row">
             <label class="form-label">Loser</label>
-            <div class="select-wrap" id="loserWrap">
-              <input type="text" class="player-search" id="loserSearch" placeholder="Search player..." autocomplete="off">
+            <div class="select-wrap">
+              <input type="text" class="player-search" id="loserSearch" placeholder="Search or create player..." autocomplete="off">
               <div class="dropdown-list hidden" id="loserDropdown"></div>
             </div>
             <input type="hidden" id="loserId">
@@ -546,7 +531,7 @@
         <span class="section-title">Players</span>
         <span class="badge" id="playerCount">0 players</span>
       </div>
-      <div class="card" style="margin-bottom:16px">
+      <div class="card" style="margin-bottom:16px" id="addPlayerCard">
         <p class="card-title">Add Player</p>
         <div class="add-player-form">
           <input type="text" id="newPlayerName" placeholder="Player name" maxlength="40">
@@ -568,6 +553,7 @@
   let role = sessionStorage.getItem('pool_role') || '';
   let players = [];
   let editingPlayerId = null;
+  let resultDismissTimer = null;
 
   // --- TOAST ---
   function toast(msg, type = 'success') {
@@ -580,10 +566,7 @@
 
   // --- API ---
   async function api(method, path, body) {
-    const opts = {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-    };
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
     if (token) opts.headers['Authorization'] = `Bearer ${token}`;
     if (body) opts.body = JSON.stringify(body);
     const res = await fetch(path, opts);
@@ -592,15 +575,71 @@
     return data;
   }
 
+  // --- MATCH RESULT ANIMATION ---
+  function showResult(winnerName, loserName, eloChange) {
+    document.getElementById('resultWinnerName').textContent = winnerName;
+    document.getElementById('resultLoserName').textContent = loserName;
+    document.getElementById('resultEloGain').textContent = `+${eloChange} ELO`;
+    document.getElementById('resultEloLoss').textContent = `-${eloChange} ELO`;
+
+    // Reset progress bar animation by re-inserting the element
+    const bar = document.getElementById('resultProgressBar');
+    bar.style.animation = 'none';
+    bar.offsetHeight; // reflow
+    bar.style.animation = '';
+
+    document.getElementById('resultOverlay').classList.remove('hidden');
+    launchConfetti();
+
+    if (resultDismissTimer) clearTimeout(resultDismissTimer);
+    resultDismissTimer = setTimeout(closeResult, 4000);
+  }
+
+  function closeResult() {
+    document.getElementById('resultOverlay').classList.add('hidden');
+    if (resultDismissTimer) clearTimeout(resultDismissTimer);
+  }
+
+  function launchConfetti() {
+    const colors = ['#22c55e', '#86efac', '#f59e0b', '#ffffff', '#3b82f6', '#fbbf24'];
+    for (let i = 0; i < 60; i++) {
+      const el = document.createElement('div');
+      const size = 5 + Math.random() * 7;
+      el.style.cssText = [
+        'position:fixed',
+        `width:${size}px`,
+        `height:${size}px`,
+        `background:${colors[Math.floor(Math.random() * colors.length)]}`,
+        `border-radius:${Math.random() > 0.4 ? '50%' : '2px'}`,
+        `left:${10 + Math.random() * 80}vw`,
+        'top:-20px',
+        'z-index:160',
+        'pointer-events:none',
+        `animation:confettiFall ${1.8 + Math.random() * 2}s ease-in ${Math.random() * 0.6}s forwards`,
+      ].join(';');
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }
+  }
+
   // --- AUTH ---
+  function applyAdminMode() {
+    if (role === 'admin') {
+      document.getElementById('adminRibbon').classList.add('visible');
+      document.getElementById('adminTopBar').classList.add('visible');
+      document.getElementById('adminHistoryCol').style.display = '';
+      document.getElementById('addPlayerCard').style.display = '';
+    } else {
+      document.getElementById('addPlayerCard').style.display = token ? '' : 'none';
+    }
+  }
+
   function showApp() {
     document.getElementById('loginOverlay').classList.add('hidden');
     document.getElementById('app').style.display = '';
     document.getElementById('rolePill').textContent = role === 'admin' ? 'Admin' : 'User';
     document.getElementById('rolePill').className = `role-pill ${role}`;
-    if (role === 'admin') {
-      document.getElementById('adminHistoryCol').style.display = '';
-    }
+    applyAdminMode();
     loadAll();
   }
 
@@ -638,6 +677,10 @@
   // --- TABS ---
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+      if (!token && (btn.dataset.tab === 'record' || btn.dataset.tab === 'players')) {
+        document.getElementById('loginOverlay').classList.remove('hidden');
+        return;
+      }
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       btn.classList.add('active');
@@ -666,20 +709,18 @@
           return r ? `<div class="form-dot ${r}" title="${r === 'W' ? 'Win' : 'Loss'}"></div>`
                    : `<div class="form-dot empty"></div>`;
         }).join('');
-        const winRate = p.winRate !== null ? p.winRate : '-';
         const winRateFill = p.winRate !== null ? p.winRate : 0;
+        const winRateText = p.winRate !== null ? p.winRate + '%' : '-';
         return `
           <tr>
-            <td class="rank-cell rank-${p.rank}">
-              <span class="rank-badge">${rankBadge}</span>
-            </td>
+            <td class="rank-cell rank-${p.rank}"><span class="rank-badge">${rankBadge}</span></td>
             <td><span class="player-name">${esc(p.name)}</span></td>
             <td class="elo-cell ${eloClass}">${p.elo}</td>
             <td class="wl-cell">${p.wins} / ${p.losses}</td>
             <td>
               <div class="winrate-bar-wrap">
                 <div class="winrate-bar"><div class="winrate-fill" style="width:${winRateFill}%"></div></div>
-                <span class="winrate-text">${winRate !== '-' ? winRate + '%' : '-'}</span>
+                <span class="winrate-text">${winRateText}</span>
               </div>
             </td>
             <td><div class="form-dots">${form}</div></td>
@@ -702,11 +743,10 @@
         tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state">No matches yet<p>Record your first result</p></div></td></tr>`;
         return;
       }
-      const cols = role === 'admin' ? 4 : 3;
       tbody.innerHTML = data.map(m => {
         const date = new Date(m.playedAt);
-        const dateStr = date.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
-        const timeStr = date.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+        const dateStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        const timeStr = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
         const adminBtn = role === 'admin'
           ? `<td><button class="btn btn-danger btn-sm btn-icon" onclick="deleteMatch('${m.id}')" title="Delete">✕</button></td>`
           : '';
@@ -733,10 +773,11 @@
   }
 
   async function deleteMatch(id) {
+    if (role !== 'admin') return;
     if (!confirm('Delete this match? ELO ratings will be recalculated.')) return;
     try {
       await api('DELETE', `/api/matches/${id}`);
-      toast('Match deleted — ELO recalculated');
+      toast('Match deleted, ELO recalculated');
       loadHistory();
       loadLeaderboard();
     } catch (err) {
@@ -761,7 +802,7 @@
       grid.innerHTML = `<div style="grid-column:1/-1"><div class="empty-state">No players yet<p>Add the first player above</p></div></div>`;
       return;
     }
-    grid.innerHTML = players
+    grid.innerHTML = [...players]
       .sort((a, b) => b.elo - a.elo)
       .map(p => {
         const games = p.wins + p.losses;
@@ -793,6 +834,7 @@
   }
 
   function startEdit(id) {
+    if (role !== 'admin') return;
     editingPlayerId = id;
     renderPlayerGrid();
     setTimeout(() => document.getElementById(`editName-${id}`)?.focus(), 0);
@@ -804,6 +846,7 @@
   }
 
   async function savePlayerName(id) {
+    if (role !== 'admin') return;
     const input = document.getElementById(`editName-${id}`);
     const name = input?.value.trim();
     if (!name) return;
@@ -818,6 +861,7 @@
   }
 
   async function deletePlayer(id) {
+    if (role !== 'admin') return;
     const p = players.find(p => p.id === id);
     if (!confirm(`Delete ${p?.name}? All their matches will also be removed and ELO recalculated.`)) return;
     try {
@@ -835,7 +879,8 @@
     const name = input.value.trim();
     if (!name) return;
     try {
-      await api('POST', '/api/players', { name });
+      const player = await api('POST', '/api/players', { name });
+      players.push(player);
       input.value = '';
       toast(`${name} added`);
       loadPlayers();
@@ -848,7 +893,7 @@
     if (e.key === 'Enter') document.getElementById('addPlayerBtn').click();
   });
 
-  // --- SEARCHABLE DROPDOWNS ---
+  // --- SEARCHABLE DROPDOWNS (with inline create) ---
   function makeDropdown(searchId, dropdownId, hiddenId, otherHiddenId) {
     const searchEl = document.getElementById(searchId);
     const dropdownEl = document.getElementById(dropdownId);
@@ -856,18 +901,28 @@
 
     function render(query) {
       const filtered = players.filter(p =>
-        p.name.toLowerCase().includes(query.toLowerCase()) && p.id !== document.getElementById(otherHiddenId).value
+        p.name.toLowerCase().includes(query.toLowerCase()) &&
+        p.id !== document.getElementById(otherHiddenId).value
       );
-      if (!filtered.length) {
-        dropdownEl.innerHTML = `<div class="dropdown-empty">No players found</div>`;
-      } else {
-        dropdownEl.innerHTML = filtered.map(p =>
-          `<div class="dropdown-item" data-id="${p.id}" data-name="${esc(p.name)}">
-            <span>${esc(p.name)}</span>
-            <span class="item-elo">${p.elo}</span>
-          </div>`
-        ).join('');
+
+      let html = filtered.map(p =>
+        `<div class="dropdown-item" data-id="${p.id}" data-name="${esc(p.name)}">
+          <span>${esc(p.name)}</span>
+          <span class="item-elo">${p.elo}</span>
+        </div>`
+      ).join('');
+
+      const trimmed = query.trim();
+      const exactMatch = players.some(p => p.name.toLowerCase() === trimmed.toLowerCase());
+      if (trimmed && !exactMatch) {
+        html += `<div class="dropdown-item create-item" data-create="${esc(trimmed)}">+ Create "${esc(trimmed)}"</div>`;
       }
+
+      if (!html) {
+        html = `<div class="dropdown-empty">Type a name to search or create</div>`;
+      }
+
+      dropdownEl.innerHTML = html;
       dropdownEl.classList.remove('hidden');
     }
 
@@ -877,24 +932,45 @@
       render(searchEl.value);
       updateMatchPreview();
     });
-    dropdownEl.addEventListener('mousedown', (e) => {
+
+    dropdownEl.addEventListener('mousedown', async (e) => {
       const item = e.target.closest('.dropdown-item');
       if (!item) return;
       e.preventDefault();
+
+      if (item.dataset.create) {
+        if (!token) {
+          dropdownEl.classList.add('hidden');
+          document.getElementById('loginOverlay').classList.remove('hidden');
+          return;
+        }
+        try {
+          const player = await api('POST', '/api/players', { name: item.dataset.create });
+          players.push(player);
+          hiddenEl.value = player.id;
+          searchEl.value = player.name;
+          dropdownEl.classList.add('hidden');
+          toast(`${player.name} created`);
+          updateMatchPreview();
+        } catch (err) {
+          toast(err.message, 'error');
+        }
+        return;
+      }
+
       hiddenEl.value = item.dataset.id;
       searchEl.value = item.dataset.name;
       dropdownEl.classList.add('hidden');
       updateMatchPreview();
     });
+
     searchEl.addEventListener('blur', () => {
-      setTimeout(() => dropdownEl.classList.add('hidden'), 150);
+      setTimeout(() => dropdownEl.classList.add('hidden'), 200);
     });
   }
 
   async function loadPlayersForDropdowns() {
-    try {
-      players = await api('GET', '/api/players');
-    } catch (_) {}
+    try { players = await api('GET', '/api/players'); } catch (_) {}
   }
 
   function updateMatchPreview() {
@@ -933,20 +1009,22 @@
     const btn = document.getElementById('submitMatch');
     btn.disabled = true;
     btn.textContent = 'Saving...';
+
+    const winner = players.find(p => p.id === winnerId);
+    const loser = players.find(p => p.id === loserId);
+
     try {
-      await api('POST', '/api/matches', { winnerId, loserId });
+      const res = await api('POST', '/api/matches', { winnerId, loserId });
+
       // Reset form
-      document.getElementById('winnerSearch').value = '';
-      document.getElementById('loserSearch').value = '';
-      document.getElementById('winnerId').value = '';
-      document.getElementById('loserId').value = '';
+      ['winnerSearch', 'loserSearch'].forEach(id => document.getElementById(id).value = '');
+      ['winnerId', 'loserId'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('matchPreview').style.display = 'none';
 
-      const winner = players.find(p => p.id === winnerId);
-      const loser = players.find(p => p.id === loserId);
-      toast(`${winner?.name} defeated ${loser?.name}`);
+      // Show result animation
+      showResult(winner?.name ?? 'Winner', loser?.name ?? 'Loser', res.match.eloChange);
 
-      // Refresh players list for updated ELOs
+      // Refresh players for updated ELOs
       players = await api('GET', '/api/players');
     } catch (err) {
       toast(err.message, 'error');
@@ -970,7 +1048,6 @@
       .replace(/"/g, '&quot;');
   }
 
-  // Check existing session on load
   if (token) {
     api('GET', '/api/players').then(() => {
       showApp();
@@ -978,29 +1055,19 @@
       showLogin();
     });
   } else {
-    // Show leaderboard tab without login
     document.getElementById('loginOverlay').classList.add('hidden');
     document.getElementById('app').style.display = '';
-    // Public mode - show leaderboard but hide auth-protected tabs
     document.getElementById('rolePill').style.display = 'none';
     document.getElementById('logoutBtn').style.display = 'none';
-    document.getElementById('app').querySelector('.auth-badge').innerHTML =
+    document.getElementById('addPlayerCard').style.display = 'none';
+    document.getElementById('authBadge').innerHTML =
       '<button class="btn-login-header" id="loginHeaderBtn">Sign in</button>';
     document.getElementById('loginHeaderBtn').addEventListener('click', () => {
       document.getElementById('loginOverlay').classList.remove('hidden');
     });
-    // Hide tabs that need auth
-    document.querySelectorAll('.tab-btn[data-tab="record"], .tab-btn[data-tab="players"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (!token) {
-          document.getElementById('loginOverlay').classList.remove('hidden');
-        }
-      });
-    });
     loadLeaderboard();
   }
 
-  // Init dropdowns after DOM ready
   makeDropdown('winnerSearch', 'winnerDropdown', 'winnerId', 'loserId');
   makeDropdown('loserSearch', 'loserDropdown', 'loserId', 'winnerId');
 </script>
