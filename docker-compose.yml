@@ -1,0 +1,15 @@
+services:
+  pool-leaderboard:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - PASSWORD=${PASSWORD}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    volumes:
+      - pool_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  pool_data:
