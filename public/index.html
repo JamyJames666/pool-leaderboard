@@ -274,6 +274,72 @@
       .vs-badge { padding: 8px 0; font-size: 18px; text-align: center; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 4px 0; }
     }
 
+    /* --- MOBILE --- */
+    @media (max-width: 540px) {
+      /* Header: shrink title, tighten gap */
+      .header-inner { padding: 0 14px; height: 52px; gap: 8px; }
+      .header-title { font-size: 16px; gap: 8px; }
+      .header-title .ball-icon { width: 24px; height: 24px; font-size: 13px; }
+      .btn-logout { padding: 4px 9px; font-size: 11px; }
+      .role-pill { display: none; }
+
+      /* Tabs: tighter */
+      .tabs { padding: 0 6px; }
+      .tab-btn { padding: 11px 10px 9px; font-size: 12px; letter-spacing: 0; }
+
+      /* Content: less padding */
+      .main { padding: 16px 12px; }
+      .card { padding: 14px; }
+
+      /* Leaderboard: hide W/L (col 4) and Win Rate (col 5) */
+      #tab-leaderboard table th:nth-child(4),
+      #tab-leaderboard table td:nth-child(4),
+      #tab-leaderboard table th:nth-child(5),
+      #tab-leaderboard table td:nth-child(5) { display: none; }
+
+      /* Tighten all table cells */
+      td { padding: 10px 10px; }
+      th { padding: 8px 10px; }
+      .rank-badge-cell { width: 36px; }
+      .rank-medal { font-size: 17px; }
+      .rank-number { font-size: 14px; }
+      .player-avatar { flex-shrink: 0; }
+      .player-name { font-size: 14px; }
+      .player-games { display: none; }
+      .elo-val { font-size: 17px; }
+
+      /* History: hide date column (col 3) to save space */
+      #tab-history table th:nth-child(3),
+      #tab-history table td:nth-child(3) { display: none; }
+      .balls-left-text { display: none; }
+
+      /* Result overlay */
+      .result-card { padding: 28px 18px 22px; }
+      .result-winner-name { font-size: 24px; }
+      .result-loser-name { font-size: 17px; }
+      .result-trophy { font-size: 40px; }
+
+      /* Record match: full width */
+      .record-inner { max-width: 100% !important; }
+
+      /* Ball buttons: slightly smaller for 4-per-row fit */
+      .ball-btn { width: 40px; height: 40px; font-size: 13px; }
+      .ball-selector { gap: 8px; }
+
+      /* Section header */
+      .section-title { font-size: 16px; letter-spacing: 1px; }
+
+      /* Add-player form: stack on mobile */
+      .add-player-form { flex-direction: column; max-width: 100%; }
+
+      /* Player grid: single column */
+      .player-grid { grid-template-columns: 1fr; }
+
+      /* Toast: full width */
+      .toast-container { left: 12px; right: 12px; top: 12px; }
+      .toast { text-align: center; }
+    }
+
     .match-submit-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
     /* preview card */
@@ -573,7 +639,7 @@
         <span class="section-title">Record a Result</span>
       </div>
       <div class="card">
-        <div style="display:flex;flex-direction:column;gap:20px;max-width:560px">
+        <div class="record-inner" style="display:flex;flex-direction:column;gap:20px;max-width:560px">
 
           <div class="vs-layout">
             <div class="player-side winner-side">
