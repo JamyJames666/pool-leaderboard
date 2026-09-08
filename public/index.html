@@ -8,27 +8,27 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ink:        #0b0e14;
-      --surface:    #131820;
-      --surface2:   #1a2230;
-      --surface3:   #202a3a;
-      --border:     #243045;
-      --border2:    #2d3d55;
-      --brass:      #c8a55a;
-      --brass-dim:  #a8873e;
-      --brass-glow: rgba(200,165,90,0.12);
-      --chalk:      #dce4ee;
-      --muted:      #5c7090;
-      --muted2:     #8090a8;
-      --felt:       #1e5c3a;
-      --felt-light: rgba(30,92,58,0.2);
-      --danger:     #d95555;
-      --danger-dim: rgba(217,85,85,0.12);
-      --silver:     #6e8098;
-      --bronze:     #8b6b3d;
-      --radius:     8px;
-      --heading:    'Arial Narrow', 'Helvetica Neue Condensed', Arial, sans-serif;
-      --body:       -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --ink: #07120f;
+      --surface: #0d1c17;
+      --surface2: #12251e;
+      --surface3: #193128;
+      --border: rgba(216, 230, 220, 0.1);
+      --border2: rgba(216, 230, 220, 0.18);
+      --brass: #d9bd76;
+      --brass-dim: #bda15e;
+      --brass-glow: rgba(217, 189, 118, 0.12);
+      --chalk: #f0f3ed;
+      --muted: #71877d;
+      --muted2: #a4b4ac;
+      --felt: #1f6a4a;
+      --felt-light: rgba(58, 160, 111, 0.1);
+      --danger: #ef7d78;
+      --danger-dim: rgba(239, 125, 120, 0.1);
+      --silver:     #9fb3aa;
+      --bronze:     #b8935c;
+      --radius: 12px;
+      --heading: Georgia, 'Times New Roman', serif;
+      --body: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     body {
@@ -183,8 +183,8 @@
     /* top 3 row accents */
     .rank-row-1 td { background: rgba(200,165,90,0.04); }
     .rank-row-1:hover td { background: rgba(200,165,90,0.08); }
-    .rank-row-2 td { background: rgba(110,128,152,0.04); }
-    .rank-row-3 td { background: rgba(139,107,61,0.04); }
+    .rank-row-2 td { background: color-mix(in srgb, var(--silver) 4%, transparent); }
+    .rank-row-3 td { background: color-mix(in srgb, var(--bronze) 4%, transparent); }
 
     /* #1 pulsing glow */
     @keyframes goldPulse {
@@ -292,15 +292,18 @@
       .card { padding: 14px; }
 
       /* Leaderboard: hide W/L (col 4) and Win Rate (col 5) */
-      #tab-leaderboard table th:nth-child(4),
-      #tab-leaderboard table td:nth-child(4),
       #tab-leaderboard table th:nth-child(5),
-      #tab-leaderboard table td:nth-child(5) { display: none; }
+      #tab-leaderboard table td:nth-child(5),
+      #tab-leaderboard table th:nth-child(6),
+      #tab-leaderboard table td:nth-child(6) { display: none; }
 
       /* Tighten all table cells */
       td { padding: 10px 10px; }
       th { padding: 8px 10px; }
-      .rank-badge-cell { width: 36px; }
+      .rank-badge-cell { width: 30px; }
+      .move-cell { width: 30px; }
+      .move { font-size: 10px; }
+      .move.new { font-size: 8px; padding: 2px 4px; }
       .rank-medal { font-size: 17px; }
       .rank-number { font-size: 14px; }
       .player-avatar { flex-shrink: 0; }
@@ -518,6 +521,476 @@
     .edit-inline { display: flex; gap: 6px; align-items: center; }
     .edit-inline input { width: 150px; padding: 5px 8px; font-size: 13px; }
     .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    /* --- 2026 VISUAL REFRESH --- */
+        body {
+      background:
+        radial-gradient(circle at 12% -10%, rgba(48, 126, 91, 0.16), transparent 34rem),
+        var(--ink);
+      font-size: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    body::before {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 75%);
+    }
+
+    .header {
+      background: rgba(7, 18, 15, 0.88);
+      border-bottom-color: rgba(216, 230, 220, 0.08);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    }
+
+    .header-inner,
+    .tabs,
+    .main {
+      max-width: 1120px;
+    }
+
+    .header-inner {
+      height: 72px;
+    }
+
+    .header-title {
+      font-family: var(--body);
+      font-size: 15px;
+      letter-spacing: 0.01em;
+      text-transform: none;
+    }
+
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .brand-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--chalk);
+    }
+
+    .brand-kicker {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .header-title .ball-icon,
+    .login-ball {
+      background: #0a0c0b;
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    .tabs {
+      gap: 4px;
+    }
+
+    .tab-btn {
+      border-bottom: 0;
+      border-radius: 8px 8px 0 0;
+      color: var(--muted2);
+      font-size: 12px;
+      padding: 11px 14px 12px;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255,255,255,0.035);
+    }
+
+    .tab-btn.active {
+      color: var(--chalk);
+      background: rgba(255,255,255,0.055);
+      box-shadow: inset 0 -2px 0 var(--brass);
+    }
+
+    .main {
+      padding-top: 38px;
+      padding-bottom: 64px;
+    }
+
+    .page-intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      color: var(--brass);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .page-title {
+      color: var(--chalk);
+      font-family: var(--heading);
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 0.98;
+    }
+
+    .page-description {
+      color: var(--muted2);
+      font-size: 14px;
+      line-height: 1.65;
+      margin-top: 12px;
+      max-width: 570px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .summary-card {
+      background: rgba(13, 28, 23, 0.76);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      min-height: 104px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .summary-value {
+      color: var(--chalk);
+      font-family: var(--heading);
+      font-size: 27px;
+      line-height: 1.1;
+      margin-top: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .summary-detail {
+      color: var(--muted2);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: rgba(13, 28, 23, 0.82);
+      box-shadow: 0 18px 54px rgba(0,0,0,0.12);
+    }
+
+    .leaderboard-card {
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    th {
+      background: rgba(255,255,255,0.018);
+      color: var(--muted);
+      font-family: var(--body);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+    }
+
+    td {
+      border-bottom-color: rgba(216, 230, 220, 0.07);
+    }
+
+    tr:hover td {
+      background: rgba(255,255,255,0.025);
+    }
+
+    .rank-row-1 {
+      animation: none;
+    }
+
+    .rank-row-1 td {
+      background: rgba(217, 189, 118, 0.035);
+    }
+
+    .player-avatar {
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: none;
+      font-family: var(--body);
+      font-size: 12px;
+    }
+
+    .player-name,
+    .match-winner-name,
+    .match-loser-name,
+    .player-card-name,
+    .selected-name {
+      font-family: var(--body);
+      letter-spacing: -0.01em;
+      text-transform: none;
+    }
+
+    .elo-val,
+    .player-card-elo {
+      font-family: var(--heading);
+      font-weight: 500;
+    }
+
+    .btn {
+      border-radius: 9px;
+      min-height: 36px;
+    }
+
+    .btn-primary {
+      box-shadow: 0 6px 20px rgba(217, 189, 118, 0.08);
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      background: rgba(255,255,255,0.035);
+      min-height: 42px;
+    }
+
+    /* --- SEASON CONTROLS --- */
+    .intro-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .season-select {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 9px;
+      color: var(--chalk);
+      cursor: pointer;
+      font-family: var(--body);
+      font-size: 13px;
+      font-weight: 600;
+      min-height: 36px;
+      outline: none;
+      padding: 0 10px;
+    }
+
+    .season-select:focus { border-color: var(--brass); }
+
+    .move-cell { width: 44px; text-align: center; }
+
+    .move {
+      display: inline-block;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+    }
+
+    .move.up   { color: #6fce9b; }
+    .move.down { color: var(--danger); }
+    .move.flat { color: var(--muted); }
+
+    .move.new {
+      background: var(--brass-glow);
+      border: 1px solid rgba(217, 189, 118, 0.28);
+      border-radius: 20px;
+      color: var(--brass);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      padding: 2px 6px;
+    }
+
+    .provisional-tag {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* --- ACTIVITY HEAT MAP --- */
+    .activity-toolbar {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .range-btn {
+      background: transparent;
+      border: 0;
+      border-radius: 7px;
+      color: var(--muted2);
+      cursor: pointer;
+      font-family: var(--body);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 7px 10px;
+    }
+
+    .range-btn:hover {
+      color: var(--chalk);
+    }
+
+    .range-btn.active {
+      background: var(--surface3);
+      color: var(--chalk);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
+    .activity-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .activity-stat {
+      background: rgba(13, 28, 23, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px 16px;
+    }
+
+    .activity-stat-label {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .activity-stat-value {
+      color: var(--chalk);
+      font-family: var(--heading);
+      font-size: 22px;
+      margin-top: 7px;
+    }
+
+    .heatmap-card {
+      padding: 22px;
+      border-radius: 16px;
+    }
+
+    .heatmap-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .heatmap-title {
+      color: var(--chalk);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .heatmap-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .heatmap-scroll {
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: 42px repeat(var(--hour-count, 24), minmax(22px, 46px));
+      gap: 4px;
+      min-width: calc(42px + var(--hour-count, 24) * 26px);
+      align-items: center;
+      justify-content: start;
+    }
+
+    .heatmap-hour {
+      color: var(--muted);
+      font-size: 9px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .heatmap-day {
+      color: var(--muted2);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .heat-cell {
+      aspect-ratio: 1;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.025);
+      border-radius: 4px;
+      min-height: 22px;
+      position: relative;
+    }
+
+    .heat-cell[data-level="1"] { background: rgba(65, 151, 108, 0.24); border-color: rgba(65, 151, 108, 0.12); }
+    .heat-cell[data-level="2"] { background: rgba(65, 151, 108, 0.46); border-color: rgba(65, 151, 108, 0.18); }
+    .heat-cell[data-level="3"] { background: rgba(93, 190, 139, 0.7); border-color: rgba(93, 190, 139, 0.25); }
+    .heat-cell[data-level="4"] { background: #78d6a4; border-color: rgba(255,255,255,0.2); }
+
+    .heat-cell:hover {
+      outline: 2px solid var(--brass);
+      outline-offset: 1px;
+      z-index: 2;
+    }
+
+    .heatmap-legend {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 15px;
+    }
+
+    .legend-cell {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    .activity-empty {
+      color: var(--muted);
+      padding: 56px 20px;
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .activity-summary { grid-template-columns: 1fr; }
+      .page-intro { grid-template-columns: 1fr; align-items: start; }
+      .page-intro .btn { width: fit-content; }
+    }
+
+    @media (max-width: 540px) {
+      .header-inner { height: 62px; }
+      .brand-kicker { display: none; }
+      .main { padding-top: 26px; }
+      .page-title { font-size: 36px; }
+      .page-description { font-size: 13px; }
+      .summary-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .summary-card { min-height: 92px; padding: 14px; }
+      .summary-value { font-size: 22px; }
+      .heatmap-card { padding: 16px; }
+      .heatmap-heading { flex-direction: column; margin-bottom: 18px; }
+    }
   </style>
 </head>
 <body>
@@ -563,7 +1036,10 @@
     <div class="header-inner">
       <div class="header-title">
         <div class="ball-icon">🎱</div>
-        Pool Leaderboard
+        <div class="brand-copy">
+          <span class="brand-name">Pool Leaderboard</span>
+          <span class="brand-kicker">Club standings</span>
+        </div>
       </div>
       <div class="auth-badge" id="authBadge">
         <span class="role-pill" id="rolePill"></span>
@@ -574,6 +1050,7 @@
       <button class="tab-btn active" data-tab="leaderboard">Leaderboard</button>
       <button class="tab-btn" data-tab="record">Record Match</button>
       <button class="tab-btn" data-tab="history">History</button>
+      <button class="tab-btn" data-tab="activity">Activity</button>
       <button class="tab-btn" data-tab="players">Players</button>
       <button class="tab-btn" data-tab="admin" id="adminTab" style="display:none;color:var(--brass)">Admin</button>
     </div>
@@ -583,16 +1060,30 @@
 
     <!-- LEADERBOARD -->
     <div class="tab-content active" id="tab-leaderboard">
-      <div class="section-header">
-        <span class="section-title">Rankings</span>
-        <button class="btn btn-secondary btn-sm" id="refreshLeaderboard">Refresh</button>
+      <div class="page-intro">
+        <div>
+          <div class="eyebrow" id="seasonEyebrow">Season</div>
+          <h1 class="page-title">Standings</h1>
+          <p class="page-description" id="seasonSummary">Loading season.</p>
+        </div>
+        <div class="intro-actions">
+          <select class="season-select" id="seasonSelect" aria-label="Season"></select>
+          <button class="btn btn-secondary btn-sm" id="refreshLeaderboard">Refresh</button>
+        </div>
       </div>
-      <div class="card" style="padding:0">
+      <div class="summary-grid" id="summaryGrid">
+        <div class="summary-card"><div class="summary-label">Table leader</div><div class="summary-value" id="summaryLeader">—</div><div class="summary-detail" id="summaryLeaderDetail">No ranking yet</div></div>
+        <div class="summary-card"><div class="summary-label">Matches played</div><div class="summary-value" id="summaryMatches">0</div><div class="summary-detail" id="summaryMatchesDetail">&nbsp;</div></div>
+        <div class="summary-card"><div class="summary-label">Active players</div><div class="summary-value" id="summaryPlayers">0</div><div class="summary-detail" id="summaryPlayersDetail">&nbsp;</div></div>
+        <div class="summary-card"><div class="summary-label">Latest action</div><div class="summary-value" id="summaryLatest">—</div><div class="summary-detail" id="summaryLatestDetail">No matches yet</div></div>
+      </div>
+      <div class="card leaderboard-card" style="padding:0">
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th class="rank-badge-cell">#</th>
+                <th class="move-cell" title="Position change since last season">&plusmn;</th>
                 <th>Player</th>
                 <th>ELO</th>
                 <th>W&nbsp;/&nbsp;L</th>
@@ -715,6 +1206,47 @@
       </div>
     </div>
 
+    <!-- ACTIVITY -->
+    <div class="tab-content" id="tab-activity">
+      <div class="page-intro">
+        <div>
+          <div class="eyebrow">Playing patterns</div>
+          <h1 class="page-title">Activity</h1>
+          <p class="page-description">Match volume by weekday and hour, based on the time each result was recorded.</p>
+        </div>
+        <div class="activity-toolbar" aria-label="Activity time range">
+          <button class="range-btn" data-range="30">30 days</button>
+          <button class="range-btn active" data-range="90">90 days</button>
+          <button class="range-btn" data-range="all">All time</button>
+        </div>
+      </div>
+      <div class="activity-summary">
+        <div class="activity-stat"><div class="activity-stat-label">Busiest day</div><div class="activity-stat-value" id="busiestDay">—</div></div>
+        <div class="activity-stat"><div class="activity-stat-label">Peak time</div><div class="activity-stat-value" id="peakTime">—</div></div>
+        <div class="activity-stat"><div class="activity-stat-label">Games in range</div><div class="activity-stat-value" id="gamesInRange">0</div></div>
+      </div>
+      <div class="card heatmap-card">
+        <div class="heatmap-heading">
+          <div>
+            <div class="heatmap-title">Games by local time</div>
+            <div class="heatmap-subtitle">Brighter squares mean more games were recorded in that hour.</div>
+          </div>
+        </div>
+        <div class="heatmap-scroll">
+          <div class="heatmap-grid" id="heatmapGrid"></div>
+        </div>
+        <div class="heatmap-legend">
+          <span>Less</span>
+          <span class="legend-cell heat-cell" data-level="0"></span>
+          <span class="legend-cell heat-cell" data-level="1"></span>
+          <span class="legend-cell heat-cell" data-level="2"></span>
+          <span class="legend-cell heat-cell" data-level="3"></span>
+          <span class="legend-cell heat-cell" data-level="4"></span>
+          <span>More</span>
+        </div>
+      </div>
+    </div>
+
     <!-- PLAYERS -->
     <div class="tab-content" id="tab-players">
       <div class="section-header">
@@ -789,6 +1321,9 @@
   let editingPlayerId = null;
   let resultDismissTimer = null;
   let selectedBalls = null;
+  let activityRange = '90';
+  let selectedSeason = 'current';
+  let seasonsLoaded = false;
 
   // --- SCORE MESSAGES ---
   const SCORE_MESSAGES = {
@@ -949,6 +1484,7 @@
       document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
       if (btn.dataset.tab === 'leaderboard') loadLeaderboard();
       if (btn.dataset.tab === 'history')     loadHistory();
+      if (btn.dataset.tab === 'activity')    loadActivity();
       if (btn.dataset.tab === 'players')     loadPlayers();
       if (btn.dataset.tab === 'record')      loadPlayersForDropdowns();
       if (btn.dataset.tab === 'admin')       loadAdminPanel();
@@ -956,15 +1492,45 @@
   });
 
   // --- LEADERBOARD ---
+  const MOVE_FLAT = '<span class="move flat">&ndash;</span>';
+
+  function moveCell(row) {
+    if (row.prevRank === null) return '<span class="move new">NEW</span>';
+    if (row.rankChange === 0) return MOVE_FLAT;
+    const up = row.rankChange > 0;
+    const title = `${up ? 'Up' : 'Down'} ${Math.abs(row.rankChange)} from last season`;
+    return `<span class="move ${up ? 'up' : 'down'}" title="${title}">${up ? '▲' : '▼'}${Math.abs(row.rankChange)}</span>`;
+  }
+
+  async function loadSeasons() {
+    const select = document.getElementById('seasonSelect');
+    const seasons = await api('GET', '/api/seasons');
+    select.innerHTML = seasons
+      .map(sn => `<option value="${sn.key}">${sn.label}${sn.current ? ' (current)' : ''}</option>`)
+      .concat('<option value="all">All time</option>')
+      .join('');
+    if (selectedSeason === 'current') selectedSeason = seasons.find(sn => sn.current)?.key ?? 'all';
+    select.value = selectedSeason;
+    seasonsLoaded = true;
+  }
+
   async function loadLeaderboard() {
     const tbody = document.getElementById('leaderboardBody');
     try {
-      const data = await api('GET', '/api/leaderboard');
-      if (!data.length) {
-        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">No players yet<p>Add players in the Players tab</p></div></td></tr>`;
+      if (!seasonsLoaded) await loadSeasons();
+      const query = `?season=${encodeURIComponent(selectedSeason)}`;
+      const [payload, matches] = await Promise.all([
+        api('GET', '/api/leaderboard' + query),
+        api('GET', '/api/matches' + query),
+      ]);
+      const rows = payload.standings;
+      updateSeasonHeader(payload);
+      updateLeaderboardSummary(payload, matches);
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">No games in ${esc(payload.label)}<p>Record a result to open the season</p></div></td></tr>`;
         return;
       }
-      tbody.innerHTML = data.map(p => {
+      tbody.innerHTML = rows.map(p => {
         const medal = p.rank === 1 ? '<span class="rank-medal">🥇</span>'
                     : p.rank === 2 ? '<span class="rank-medal">🥈</span>'
                     : p.rank === 3 ? '<span class="rank-medal">🥉</span>'
@@ -976,15 +1542,18 @@
         }).join('');
         const wrFill = p.winRate ?? 0;
         const wrText = p.winRate !== null ? p.winRate + '%' : '-';
+        const games = `${p.games} game${p.games !== 1 ? 's' : ''}`;
+        const meta = p.provisional ? `${games} <span class="provisional-tag">&middot; provisional</span>` : games;
         return `
           <tr class="rank-row-${p.rank}">
             <td class="rank-badge-cell">${medal}</td>
+            <td class="move-cell">${moveCell(p)}</td>
             <td>
               <div class="player-cell">
                 ${avatarEl(p.name)}
                 <div>
                   <div class="player-name">${esc(p.name)}</div>
-                  <div class="player-games">${p.games} game${p.games !== 1 ? 's' : ''}</div>
+                  <div class="player-games">${meta}</div>
                 </div>
               </div>
             </td>
@@ -1000,11 +1569,62 @@
           </tr>`;
       }).join('');
     } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--danger)">${esc(err.message)}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--danger)">${esc(err.message)}</td></tr>`;
     }
   }
 
+  function updateSeasonHeader(payload) {
+    document.getElementById('seasonEyebrow').textContent = payload.label;
+    const summary = document.getElementById('seasonSummary');
+    const played = `${payload.matches} match${payload.matches === 1 ? '' : 'es'}`;
+    if (payload.season === 'all') {
+      summary.textContent = `Every result ever recorded, ${played} in total.`;
+      return;
+    }
+    const ends = new Date(payload.end);
+    const daysLeft = Math.ceil((ends - Date.now()) / 86400000);
+    const closes = ends.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+    const tail = payload.current
+      ? (daysLeft > 0 ? `Ends ${closes}, ${daysLeft} day${daysLeft === 1 ? '' : 's'} to go.` : 'Closes today.')
+      : `Closed ${closes}.`;
+    const carry = Math.round(payload.carryover * 100);
+    const reset = carry === 0
+      ? 'Everyone restarts on 1000 each season.'
+      : `Everyone starts each season ${carry}% of the way back to 1000.`;
+    summary.textContent = `${played} played. ${reset} ${tail}`;
+  }
+
+  document.getElementById('seasonSelect').addEventListener('change', (e) => {
+    selectedSeason = e.target.value;
+    loadLeaderboard();
+  });
+
   document.getElementById('refreshLeaderboard').addEventListener('click', loadLeaderboard);
+
+  function updateLeaderboardSummary(payload, matches) {
+    const rows = payload.standings;
+    const leader = rows[0];
+    document.getElementById('summaryLeader').textContent = leader?.name || '-';
+    document.getElementById('summaryLeaderDetail').textContent = leader ? `${leader.elo} ELO, ${leader.wins}/${leader.losses}` : 'No ranking yet';
+    document.getElementById('summaryMatches').textContent = matches.length;
+    document.getElementById('summaryPlayers').textContent = rows.length;
+
+    const provisional = rows.filter(r => r.provisional).length;
+    document.getElementById('summaryMatchesDetail').textContent = payload.season === 'all' ? 'All time' : `In ${payload.label}`;
+    document.getElementById('summaryPlayersDetail').textContent = provisional
+      ? `${provisional} still provisional`
+      : 'All past 5 games';
+
+    const latest = matches[0];
+    if (!latest) {
+      document.getElementById('summaryLatest').textContent = '-';
+      document.getElementById('summaryLatestDetail').textContent = 'No matches yet';
+      return;
+    }
+    const latestDate = new Date(latest.playedAt);
+    document.getElementById('summaryLatest').textContent = latestDate.toLocaleDateString('en-GB', { day:'numeric', month:'short' });
+    document.getElementById('summaryLatestDetail').textContent = `${latest.winnerName} beat ${latest.loserName}`;
+  }
 
   // --- HISTORY ---
   async function loadHistory() {
@@ -1016,6 +1636,7 @@
         tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state">No matches yet<p>Record your first result</p></div></td></tr>`;
         return;
       }
+
       tbody.innerHTML = data.map(m => {
         const d = new Date(m.playedAt);
         const dateStr = d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
@@ -1046,6 +1667,90 @@
       tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--danger)">${esc(err.message)}</td></tr>`;
     }
   }
+
+  // --- ACTIVITY HEAT MAP ---
+  const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+  function matchesInActivityRange(matches) {
+    if (activityRange === 'all') return matches;
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - Number(activityRange));
+    return matches.filter(match => new Date(match.playedAt) >= cutoff);
+  }
+
+  function heatLevel(count, maxCount) {
+    if (!count || !maxCount) return 0;
+    return Math.max(1, Math.ceil((count / maxCount) * 4));
+  }
+
+  function renderActivity(matches) {
+    const filtered = matchesInActivityRange(matches);
+    const counts = Array.from({ length: 7 }, () => Array(24).fill(0));
+    const dayTotals = Array(7).fill(0);
+    const hourTotals = Array(24).fill(0);
+
+    filtered.forEach(match => {
+      const date = new Date(match.playedAt);
+      const day = (date.getDay() + 6) % 7;
+      const hour = date.getHours();
+      counts[day][hour]++;
+      dayTotals[day]++;
+      hourTotals[hour]++;
+    });
+
+    const maxCount = Math.max(0, ...counts.flat());
+    const grid = document.getElementById('heatmapGrid');
+
+    // Only render hours anyone actually plays, otherwise the grid is mostly dead
+    // space and overflows off a phone screen before reaching any data.
+    const played = hourTotals.map((n, h) => (n > 0 ? h : -1)).filter(h => h >= 0);
+    const from = played.length ? Math.max(0, Math.min(...played) - 1) : 9;
+    const to = played.length ? Math.min(23, Math.max(...played) + 1) : 20;
+    const hours = [];
+    for (let h = from; h <= to; h++) hours.push(h);
+    grid.style.setProperty('--hour-count', hours.length);
+
+    let html = '<div></div>';
+    hours.forEach(hour => {
+      html += `<div class="heatmap-hour">${hour % 2 === 0 ? String(hour).padStart(2, '0') : ''}</div>`;
+    });
+    DAY_NAMES.forEach((dayName, day) => {
+      html += `<div class="heatmap-day">${dayName.slice(0, 3)}</div>`;
+      hours.forEach(hour => {
+        const count = counts[day][hour];
+        const label = `${dayName}, ${String(hour).padStart(2, '0')}:00, ${count} game${count === 1 ? '' : 's'}`;
+        html += `<div class="heat-cell" data-level="${heatLevel(count, maxCount)}" title="${label}" aria-label="${label}"></div>`;
+      });
+    });
+    grid.innerHTML = html;
+
+    const busiestDayCount = Math.max(0, ...dayTotals);
+    const busiestDayIndex = dayTotals.indexOf(busiestDayCount);
+    const peakHourCount = Math.max(0, ...hourTotals);
+    const peakHour = hourTotals.indexOf(peakHourCount);
+
+    document.getElementById('gamesInRange').textContent = filtered.length;
+    document.getElementById('busiestDay').textContent = busiestDayCount ? DAY_NAMES[busiestDayIndex] : '—';
+    document.getElementById('peakTime').textContent = peakHourCount ? `${String(peakHour).padStart(2, '0')}:00–${String((peakHour + 1) % 24).padStart(2, '0')}:00` : '—';
+  }
+
+  async function loadActivity() {
+    try {
+      const matches = await api('GET', '/api/matches');
+      renderActivity(matches);
+    } catch (err) {
+      document.getElementById('heatmapGrid').innerHTML = `<div class="activity-empty">${esc(err.message)}</div>`;
+    }
+  }
+
+  document.querySelectorAll('.range-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.range-btn').forEach(button => button.classList.remove('active'));
+      btn.classList.add('active');
+      activityRange = btn.dataset.range;
+      loadActivity();
+    });
+  });
 
   async function deleteMatch(id) {
     if (role !== 'admin') return;
