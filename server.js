@@ -14,7 +14,7 @@ const START_ELO = 1000;
 const FLOOR_ELO = 100;
 const PROVISIONAL_GAMES = 5;
 // 0 = hard reset to START_ELO every quarter, 1 = no reset at all
-const SEASON_CARRYOVER = 0.5;
+const SEASON_CARRYOVER = 0;
 
 // in-memory sessions: token -> { role, expires }
 const sessions = new Map();
