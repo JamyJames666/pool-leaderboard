@@ -115,7 +115,7 @@ function computeSeasons(db) {
 
   for (const key of keys) {
     const stats = new Map(db.players.map(p => [p.id, {
-      elo: seedFrom(carried.get(p.id)), wins: 0, losses: 0, form: [],
+      elo: seedFrom(carried.get(p.id)), wins: 0, losses: 0, form: [], lastDelta: null,
     }]));
 
     for (const m of buckets.get(key)) {
@@ -123,8 +123,8 @@ function computeSeasons(db) {
       const l = stats.get(m.loserId);
       if (!w || !l) continue;
       const change = calcEloChange(w.elo, l.elo);
-      w.elo += change; w.wins++; w.form.push('W');
-      l.elo = Math.max(FLOOR_ELO, l.elo - change); l.losses++; l.form.push('L');
+      w.elo += change; w.wins++; w.form.push('W'); w.lastDelta = change;
+      l.elo = Math.max(FLOOR_ELO, l.elo - change); l.losses++; l.form.push('L'); l.lastDelta = -change;
     }
 
     const previous = standings.get(keys[keys.indexOf(key) - 1]);
@@ -138,7 +138,7 @@ function computeSeasons(db) {
         return {
           id: p.id, name: p.name, elo: st.elo, wins: st.wins, losses: st.losses,
           games, winRate: Math.round(st.wins / games * 100),
-          form: st.form.slice(-5),
+          form: st.form.slice(-5), lastDelta: st.lastDelta,
           provisional: games < PROVISIONAL_GAMES,
         };
       }))
@@ -165,7 +165,7 @@ function allTimeStandings(db) {
     return {
       id: p.id, name: p.name, elo: p.elo, wins: p.wins, losses: p.losses,
       games, winRate: games ? Math.round(p.wins / games * 100) : null,
-      form: form.get(p.id).slice(-5),
+      form: form.get(p.id).slice(-5), lastDelta: null,
       provisional: false, prevRank: null, rankChange: null,
     };
   }));
