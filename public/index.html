@@ -725,6 +725,178 @@
 
     .hidden { display: none !important; }
 
+    /* ============ PODIUM ============ */
+
+    [hidden] { display: none !important; }
+
+    .podium { margin-bottom: 20px; }
+    .podium-label { font-size: 13px; font-weight: 500; color: var(--ink-2); letter-spacing: -0.008em; margin-bottom: 10px; }
+    .podium-row { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .podium-place {
+      display: flex; align-items: center; gap: 11px;
+      background: var(--surface); border-radius: var(--r-md); box-shadow: var(--lift-1);
+      padding: 14px 16px; min-width: 0;
+    }
+    .podium-rank {
+      flex: none; font-size: 12px; font-weight: 500; color: var(--ink-2);
+      background: var(--surface-sub); border-radius: var(--r-pill); padding: 3px 9px;
+    }
+    .podium-place.is-first .podium-rank { background: var(--accent-wash); color: var(--accent-deep); }
+    .podium-who { display: flex; flex-direction: column; min-width: 0; }
+    .podium-name { font-size: 15px; font-weight: 500; letter-spacing: -0.016em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .podium-meta { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+    .bd-cell { color: var(--ink-2); font-size: 14.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    /* ============ CUPS ============ */
+
+    .link-btn {
+      font: inherit; font-size: 13px; color: var(--ink-2); background: none; border: 0; padding: 0;
+      text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+    }
+    .link-btn:hover { color: var(--ink); }
+
+    .cup-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; max-width: 720px; }
+    .cup-form input[type="text"] { max-width: 420px; }
+    .field-label { font-size: 12.5px; font-weight: 500; color: var(--ink-2); margin-top: 8px; }
+    .field-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 8px; }
+    .field-row .field-label { margin-top: 0; }
+    .cup-form .segmented { align-self: flex-start; flex-wrap: wrap; }
+
+    .chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      font: inherit; font-size: 14px; color: var(--ink);
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 13px 5px 5px; border-radius: var(--r-pill);
+      background: var(--surface); border: 1px solid var(--hair); cursor: pointer;
+      transition: background .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease);
+    }
+    .chip:hover { border-color: #CFCFD8; }
+    .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+    .cup-form-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-top: 12px; }
+    .cup-form-note { font-size: 13.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+    .cup-form-actions { display: flex; gap: 8px; }
+
+    .cup-group-label { grid-column: 1 / -1; font-size: 13px; font-weight: 500; color: var(--ink-2); margin-top: 8px; }
+    .cup-group-label:first-child { margin-top: 0; }
+    .cup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+    .cup-card {
+      font: inherit; color: inherit; text-align: left; cursor: pointer;
+      display: flex; flex-direction: column; gap: 4px;
+      background: var(--surface); border: 0; border-radius: var(--r-lg); box-shadow: var(--lift-1);
+      padding: 20px 22px;
+      transition: transform .24s var(--ease), box-shadow .24s var(--ease);
+    }
+    .cup-card:hover { transform: translateY(-2px); box-shadow: var(--lift-2); }
+    .cup-card-name { font-size: 18px; font-weight: 500; letter-spacing: -0.022em; }
+    .cup-card-meta { font-size: 13.5px; color: var(--ink-2); }
+    .cup-card-status { font-size: 14px; margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+    .cup-card-status .avatar { flex: none; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: none; }
+
+    .back-link {
+      font: inherit; font-size: 14px; color: var(--ink-2); background: none; border: 0; padding: 0; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 4px; margin-bottom: 14px;
+    }
+    .back-link:hover { color: var(--ink); }
+    .rr-num { color: var(--ink-2); font-size: 14.5px; font-variant-numeric: tabular-nums; }
+    .fx-ph { width: 20px; height: 20px; flex: none; border-radius: 50%; border: 1px dashed var(--hair); }
+    .fx-balls { display: flex; flex-wrap: wrap; gap: 8px; }
+    .rr-layout .player-cell { display: flex; align-items: center; gap: 10px; }
+
+    .champion {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--accent-wash); border-radius: var(--r-lg);
+      padding: 16px 20px; margin-bottom: 20px;
+    }
+    .champion-label { font-size: 12.5px; font-weight: 500; color: var(--accent-deep); }
+    .champion-name { font-size: 22px; font-weight: 500; letter-spacing: -0.026em; line-height: 1.15; }
+
+    .fx-editor {
+      background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--lift-2);
+      padding: 20px 22px; margin-bottom: 20px;
+      display: flex; flex-direction: column; gap: 16px;
+      animation: panelIn .35s var(--ease) both;
+    }
+    .fx-editor-title { font-size: 16px; font-weight: 500; letter-spacing: -0.018em; }
+    .fx-pick { display: flex; gap: 10px; flex-wrap: wrap; }
+    .fx-pick .chip { padding: 7px 16px 7px 7px; font-size: 15px; }
+    .fx-editor-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+    .bracket-card { padding: 22px 0 22px 22px; }
+    .bracket-scroll { overflow-x: auto; padding-right: 22px; padding-bottom: 6px; }
+    .bracket-scroll.is-overflow { mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
+    .bracket { position: relative; }
+    .bracket svg { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+    .bracket-line { fill: none; stroke: var(--hair); stroke-width: 1.5; stroke-linejoin: round; }
+    .bracket-line.is-champ { stroke: var(--accent); stroke-width: 2; }
+    .bracket-section { position: absolute; left: 0; font-size: 13px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+    .bracket-round { position: absolute; font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+
+    .fx {
+      position: absolute; display: flex; flex-direction: column;
+      font: inherit; color: inherit; text-align: left; padding: 0;
+      background: var(--surface); border: 1px solid var(--hair); border-radius: var(--r-sm);
+      overflow: hidden;
+      transition: box-shadow .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease);
+    }
+    button.fx { cursor: pointer; }
+    button.fx:hover { box-shadow: var(--lift-2); transform: translateY(-1px); }
+    .fx.fx-ready { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+    .fx.fx-bye { background: transparent; border-style: dashed; }
+    .fx.is-open { box-shadow: 0 0 0 3px var(--accent); border-color: var(--accent); }
+    .fx-row {
+      display: flex; align-items: center; gap: 7px;
+      height: 32px; padding: 0 10px 0 8px; min-width: 0;
+      font-size: 13.5px;
+    }
+    .fx-row + .fx-row { border-top: 1px solid var(--hair-soft); }
+    .fx-seed { width: 14px; flex: none; font-size: 11px; color: var(--ink-3); text-align: right; font-variant-numeric: tabular-nums; }
+    .fx-row .avatar { flex: none; }
+    .fx-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .fx-score { flex: none; font-size: 12.5px; font-weight: 500; font-variant-numeric: tabular-nums; }
+    .fx-row.is-winner .fx-name { font-weight: 500; }
+    .fx-row.is-winner .fx-score { color: var(--gain); }
+    .fx-row.is-loser { color: var(--ink-3); }
+    .fx-row.is-loser .avatar { opacity: .55; }
+    .fx-row.is-champ { background: var(--accent-wash); }
+    .fx-row.is-pending { padding-left: 10px; }
+    .fx-row.is-pending .fx-name { color: var(--ink-3); font-size: 12.5px; }
+    .fx-bye .fx-row { color: var(--ink-3); }
+
+    .rr-layout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; align-items: start; }
+    .rr-layout .card-title { padding: 20px 22px 0; margin-bottom: 4px; }
+    .xt-wrap { overflow-x: auto; padding: 8px 14px 16px; }
+    .xt { border-collapse: separate; border-spacing: 4px; width: auto; }
+    .xt th { font-size: 12px; font-weight: 500; color: var(--ink-2); padding: 4px 6px; border: 0; white-space: nowrap; }
+    .xt th.xt-row { text-align: left; font-size: 13.5px; color: var(--ink); max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
+    .xt td { height: auto; padding: 0; border: 0; }
+    .xt tbody tr:hover { background: none; }
+    .xt-cell {
+      width: 58px; height: 40px; border-radius: 8px;
+      display: grid; place-items: center;
+      font: inherit; font-size: 12.5px; font-weight: 500; font-variant-numeric: tabular-nums;
+      background: var(--surface-sub); color: var(--ink-3); border: 0;
+    }
+    .xt-cell.win { background: var(--gain-wash); color: var(--gain); }
+    .xt-cell.loss { background: var(--surface-sub); color: var(--loss); }
+    .xt-cell.self { background: transparent; }
+    button.xt-cell { cursor: pointer; }
+    button.xt-cell:hover { box-shadow: inset 0 0 0 1.5px currentColor; }
+    .xt-cell.xt-play { color: var(--accent-deep); background: var(--accent-wash); }
+    .xt-cell.xt-play:hover { background: var(--accent); color: #fff; box-shadow: none; }
+
+    @media (max-width: 860px) { .rr-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) {
+      .podium-row { grid-template-columns: 1fr; gap: 6px; }
+      .podium-place { padding: 10px 14px; }
+      .bracket-card { padding: 18px 0 18px 18px; }
+      .fx-editor { padding: 18px; }
+      .rr-layout .card-table { padding: 0; }
+      .xt-cell { width: 46px; height: 36px; font-size: 12px; }
+    }
+
     /* ============ RESPONSIVE ============ */
 
     @media (max-width: 860px) {
@@ -757,7 +929,7 @@
     }
 
     @media (max-width: 640px) {
-      .wr-cell, thead th.col-wr, .wl-cell { display: none; }
+      .wr-cell, thead th.col-wr, .wl-cell, .bd-cell { display: none; }
       .elo-cell .delta { display: none; }
       .page-lede { font-size: 15.5px; }
       .rank-badge-cell { width: 28px; }
@@ -808,6 +980,7 @@
         <button class="tab-btn" data-tab="record">Record</button>
         <button class="tab-btn" data-tab="history">History</button>
         <button class="tab-btn" data-tab="activity">Activity</button>
+        <button class="tab-btn" data-tab="cups">Cups</button>
         <button class="tab-btn" data-tab="players">Players</button>
         <button class="tab-btn" data-tab="admin" id="adminTab" style="display:none">Admin</button>
       </nav>
@@ -831,6 +1004,11 @@
           <button class="btn btn-secondary btn-sm" id="refreshLeaderboard">Refresh</button>
         </div>
       </div>
+      <section class="podium" id="podium" hidden aria-labelledby="podiumLabel">
+        <h2 class="podium-label" id="podiumLabel"></h2>
+        <ol class="podium-row" id="podiumRow"></ol>
+      </section>
+
       <div class="card card-table">
         <div class="table-wrap">
           <table>
@@ -840,13 +1018,14 @@
                 <th class="move-cell" title="Position change since last season">&plusmn;</th>
                 <th>Player</th>
                 <th class="elo-cell">ELO</th>
+                <th class="bd-cell" title="Ball difference, the tie breaker after ELO">BD</th>
                 <th class="wl-cell">W&nbsp;/&nbsp;L</th>
                 <th class="wr-cell col-wr">Win&nbsp;%</th>
                 <th style="text-align:right">Form</th>
               </tr>
             </thead>
             <tbody id="leaderboardBody">
-              <tr><td colspan="7" class="loading-row"><span class="spinner"></span></td></tr>
+              <tr><td colspan="8" class="loading-row"><span class="spinner"></span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1002,6 +1181,51 @@
           <span>More</span>
         </div>
       </div>
+    </div>
+
+    <!-- CUPS -->
+    <div class="tab-content" id="tab-cups">
+      <div id="cupsList">
+        <div class="page-intro">
+          <div>
+            <h1 class="page-title">Cups</h1>
+            <p class="page-lede">One cup a quarter, played outside the ladder. Cup frames never change anyone's ELO.</p>
+          </div>
+          <div class="intro-actions">
+            <button class="btn btn-primary btn-sm" id="newCupBtn" hidden>New cup</button>
+          </div>
+        </div>
+
+        <form class="card cup-form" id="cupForm" hidden>
+          <label class="field-label" for="cupName">Name</label>
+          <input type="text" id="cupName" maxlength="60" autocomplete="off">
+
+          <span class="field-label">Format</span>
+          <div class="segmented" role="group" aria-label="Cup format" id="cupFormat">
+            <button type="button" class="range-btn active" data-format="single">Single elimination</button>
+            <button type="button" class="range-btn" data-format="double">Double elimination</button>
+            <button type="button" class="range-btn" data-format="roundrobin">Round robin</button>
+          </div>
+
+          <div class="field-row">
+            <span class="field-label">Players</span>
+            <button type="button" class="link-btn" id="cupSelectAll">Select all</button>
+          </div>
+          <div class="chip-grid" id="cupPlayers"></div>
+
+          <div class="cup-form-foot">
+            <span class="cup-form-note" id="cupNote">Pick at least 2 players</span>
+            <div class="cup-form-actions">
+              <button type="button" class="btn btn-secondary btn-sm" id="cupCancel">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-sm" id="cupCreate" disabled>Create cup</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="cup-grid" id="cupGrid"><div class="loading-row" style="grid-column:1/-1"><span class="spinner"></span></div></div>
+      </div>
+
+      <div id="cupDetail" hidden></div>
     </div>
 
     <!-- PLAYERS -->
@@ -1219,6 +1443,7 @@
       if (btn.dataset.tab === 'leaderboard') loadLeaderboard();
       if (btn.dataset.tab === 'history')     loadHistory();
       if (btn.dataset.tab === 'activity')    loadActivity();
+      if (btn.dataset.tab === 'cups')        loadCups();
       if (btn.dataset.tab === 'players')     loadPlayers();
       if (btn.dataset.tab === 'record')      loadPlayersForDropdowns();
       if (btn.dataset.tab === 'admin')       loadAdminPanel();
@@ -1263,8 +1488,9 @@
       const rows = payload.standings;
       updateSeasonHeader(payload);
       updateLeaderboardSummary(payload, matches);
+      renderPodium(payload.previousSeason);
       if (!rows.length) {
-        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><strong>Nothing played in ${esc(payload.label)}</strong>Record a result and the season opens.</div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><strong>Nothing played in ${esc(payload.label)}</strong>Record a result and the season opens.</div></td></tr>`;
         return;
       }
       tbody.innerHTML = rows.map(p => {
@@ -1282,6 +1508,7 @@
               <div class="player-cell"><span class="player-name">${esc(p.name)}</span>${tag}</div>
             </td>
             <td class="elo-cell"><span class="elo-val">${p.elo}</span>${deltaEl(p.lastDelta)}</td>
+            <td class="bd-cell">${signed(p.ballDiff)}</td>
             <td class="wl-cell">${p.wins}&nbsp;/&nbsp;${p.losses}</td>
             <td class="wr-cell"><span class="winrate-num">${wrText}</span></td>
             <td><div class="form-dots">${form}</div></td>
@@ -1292,8 +1519,30 @@
       tbody.classList.add('staggered');
       [...tbody.rows].forEach((tr, i) => { tr.style.animationDelay = Math.min(i, 12) * 28 + 'ms'; });
     } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><strong>Could not load the ladder</strong>${esc(err.message)}</div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><strong>Could not load the ladder</strong>${esc(err.message)}</div></td></tr>`;
     }
+  }
+
+  function signed(n) {
+    if (!n) return '0';
+    return n > 0 ? `+${n}` : `−${Math.abs(n)}`;
+  }
+
+  const ORDINALS = ['1st', '2nd', '3rd'];
+  function renderPodium(prev) {
+    const el = document.getElementById('podium');
+    if (!prev || !prev.top3.length) { el.hidden = true; return; }
+    document.getElementById('podiumLabel').textContent = `${prev.label} final standings`;
+    document.getElementById('podiumRow').innerHTML = prev.top3.map(r => `
+      <li class="podium-place${r.rank === 1 ? ' is-first' : ''}">
+        <span class="podium-rank">${ORDINALS[r.rank - 1]}</span>
+        ${avatarEl(r.name, 36)}
+        <span class="podium-who">
+          <span class="podium-name">${esc(r.name)}</span>
+          <span class="podium-meta">${r.elo} &middot; BD ${signed(r.ballDiff)}</span>
+        </span>
+      </li>`).join('');
+    el.hidden = false;
   }
 
   function deltaEl(d) {
@@ -1781,6 +2030,448 @@
       await matches.reduce(async (chain, m) => { await chain; await api('DELETE', `/api/matches/${m.id}`); }, Promise.resolve());
       toast('All matches cleared', 'info'); loadAdminPanel(); loadLeaderboard();
     } catch (err) { toast(err.message, 'error'); }
+  });
+
+  // --- CUPS ---
+  const FORMAT_LABELS = { single: 'Single elimination', double: 'Double elimination', roundrobin: 'Round robin' };
+  const FX = { w: 188, h: 67, col: 36, gap: 16, label: 28, section: 32, between: 44 };
+  const cupState = { id: null, cup: null, open: null, winner: null, balls: null, format: 'single', picked: new Set(), roster: [] };
+
+  const firstName = n => String(n).split(' ')[0];
+  const framesFor = (format, n) => format === 'roundrobin' ? n * (n - 1) / 2 : format === 'double' ? 2 * n - 2 : n - 1;
+  function defaultCupName() {
+    const d = new Date();
+    return `Q${Math.floor(d.getUTCMonth() / 3) + 1} ${d.getUTCFullYear()} Cup`;
+  }
+
+  async function loadCups() {
+    document.getElementById('newCupBtn').hidden = !token || !document.getElementById('cupForm').hidden;
+    if (cupState.id) return openCup(cupState.id);
+    const grid = document.getElementById('cupGrid');
+    try {
+      renderCupList(await api('GET', '/api/cups'));
+    } catch (err) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><strong>Could not load cups</strong>${esc(err.message)}</div>`;
+    }
+  }
+
+  function renderCupList(list) {
+    const grid = document.getElementById('cupGrid');
+    if (!list.length) {
+      grid.innerHTML = `<div class="card empty-state" style="grid-column:1/-1"><strong>No cups yet</strong>${token ? 'Start this quarter\'s cup with New cup.' : 'Sign in to start this quarter\'s cup.'}</div>`;
+      return;
+    }
+    const card = c => `
+      <button type="button" class="cup-card" data-cup="${c.id}">
+        <span class="cup-card-name">${esc(c.name)}</span>
+        <span class="cup-card-meta">${FORMAT_LABELS[c.format]} &middot; ${c.players} players &middot; ${esc(c.seasonLabel)}</span>
+        <span class="cup-card-status">${c.status === 'complete'
+          ? `${avatarEl(c.championName || '?', 22)}<span>Won by <strong>${esc(c.championName || 'nobody')}</strong></span>`
+          : `<span class="live-dot"></span><span>${c.progress.done} of ${c.progress.total} frames${c.leaderName ? ` &middot; ${esc(c.leaderName)} leads` : ''}</span>`}</span>
+      </button>`;
+    const live = list.filter(c => c.status === 'live');
+    const done = list.filter(c => c.status !== 'live');
+    grid.innerHTML =
+      (live.length ? `<div class="cup-group-label">In progress</div>${live.map(card).join('')}` : '') +
+      (done.length ? `<div class="cup-group-label">Finished</div>${done.map(card).join('')}` : '');
+  }
+
+  document.getElementById('cupGrid').addEventListener('click', e => {
+    const btn = e.target.closest('[data-cup]');
+    if (btn) openCup(btn.dataset.cup);
+  });
+
+  async function openCupForm() {
+    document.getElementById('cupForm').hidden = false;
+    document.getElementById('newCupBtn').hidden = true;
+    document.getElementById('cupName').value = defaultCupName();
+    cupState.picked = new Set();
+    const chips = document.getElementById('cupPlayers');
+    chips.innerHTML = '<span class="spinner"></span>';
+    try { cupState.roster = (await api('GET', '/api/players')).slice().sort((a, b) => a.name.localeCompare(b.name)); }
+    catch (err) { toast(err.message, 'error'); cupState.roster = []; }
+    renderCupChips();
+  }
+
+  function closeCupForm() {
+    document.getElementById('cupForm').hidden = true;
+    document.getElementById('newCupBtn').hidden = !token;
+  }
+
+  function renderCupChips() {
+    document.getElementById('cupPlayers').innerHTML = cupState.roster.map(p => `
+      <button type="button" class="chip" data-player="${p.id}" aria-pressed="${cupState.picked.has(p.id)}">${avatarEl(p.name, 26)}${esc(p.name)}</button>`).join('');
+    const n = cupState.picked.size;
+    document.getElementById('cupNote').textContent = n < 2
+      ? 'Pick at least 2 players'
+      : `${n} players, ${framesFor(cupState.format, n)} frames`;
+    document.getElementById('cupCreate').disabled = n < 2;
+    document.getElementById('cupSelectAll').textContent = n && n === cupState.roster.length ? 'Clear' : 'Select all';
+  }
+
+  document.getElementById('newCupBtn').addEventListener('click', openCupForm);
+  document.getElementById('cupCancel').addEventListener('click', closeCupForm);
+  document.getElementById('cupPlayers').addEventListener('click', e => {
+    const chip = e.target.closest('[data-player]');
+    if (!chip) return;
+    const id = chip.dataset.player;
+    cupState.picked.has(id) ? cupState.picked.delete(id) : cupState.picked.add(id);
+    renderCupChips();
+  });
+  document.getElementById('cupSelectAll').addEventListener('click', () => {
+    cupState.picked = cupState.picked.size === cupState.roster.length ? new Set() : new Set(cupState.roster.map(p => p.id));
+    renderCupChips();
+  });
+  document.getElementById('cupFormat').addEventListener('click', e => {
+    const btn = e.target.closest('[data-format]');
+    if (!btn) return;
+    document.querySelectorAll('#cupFormat .range-btn').forEach(b => b.classList.toggle('active', b === btn));
+    cupState.format = btn.dataset.format;
+    renderCupChips();
+  });
+  document.getElementById('cupForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('cupCreate');
+    btn.disabled = true;
+    try {
+      const cup = await api('POST', '/api/cups', {
+        name: document.getElementById('cupName').value.trim(),
+        format: cupState.format,
+        playerIds: [...cupState.picked],
+      });
+      closeCupForm();
+      toast(`${cup.name} is on`);
+      openCup(cup.id, cup);
+    } catch (err) {
+      toast(err.message, 'error');
+      btn.disabled = false;
+    }
+  });
+
+  async function openCup(id, data) {
+    const detail = document.getElementById('cupDetail');
+    if (cupState.id !== id) { cupState.open = null; detail.innerHTML = '<div class="loading-row"><span class="spinner"></span></div>'; }
+    cupState.id = id;
+    document.getElementById('cupsList').hidden = true;
+    detail.hidden = false;
+    if (data) return renderCupDetail(data);
+    try { renderCupDetail(await api('GET', `/api/cups/${id}`)); }
+    catch (err) { toast(err.message, 'error'); closeCup(); }
+  }
+
+  function closeCup() {
+    cupState.id = null; cupState.cup = null; cupState.open = null;
+    document.getElementById('cupDetail').hidden = true;
+    document.getElementById('cupsList').hidden = false;
+    loadCups();
+  }
+
+  function roundName(cup, bracket, round) {
+    const double = cup.format === 'double';
+    if (bracket === 'RR') return `Round ${round}`;
+    if (bracket === 'GF') return 'Grand final';
+    const max = Math.max(...cup.fixtures.filter(f => f.bracket === bracket).map(f => f.round));
+    if (bracket === 'L') return round === max ? 'Losers final' : `Losers round ${round}`;
+    if (round === max) return double ? 'Winners final' : 'Final';
+    if (round === max - 1) return double ? 'Winners semis' : 'Semi-finals';
+    if (round === max - 2 && !double) return 'Quarter-finals';
+    return `Round ${round}`;
+  }
+
+  function onChampPath(cup, f) {
+    return !!cup.championId && cup.format !== 'roundrobin' && f.winnerId === cup.championId;
+  }
+
+  function renderCupDetail(cup) {
+    cupState.cup = cup;
+    const detail = document.getElementById('cupDetail');
+    const scroller = detail.querySelector('.bracket-scroll');
+    const keepScroll = scroller ? scroller.scrollLeft : null;
+    const live = cup.status !== 'complete';
+    const meta = [
+      FORMAT_LABELS[cup.format],
+      `${cup.seeds.length} players`,
+      esc(cup.seasonLabel),
+      live ? `${cup.progress.done} of ${cup.progress.total} frames played` : 'Finished',
+    ].join(' &middot; ');
+    const hint = !live ? '' : token
+      ? '<br>Frames ready to play are outlined. Tap one to record the result.'
+      : '<br>Sign in to record results.';
+    const champRow = cup.table ? cup.table.find(r => r.id === cup.championId) : null;
+
+    detail.innerHTML = `
+      <button type="button" class="back-link" id="cupBack"><svg class="ico ico-sm" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>All cups</button>
+      <div class="page-intro">
+        <div>
+          <h1 class="page-title">${esc(cup.name)}</h1>
+          <p class="page-lede">${meta}${hint}</p>
+        </div>
+        ${role === 'admin' ? '<div class="intro-actions"><button type="button" class="btn btn-danger btn-sm" id="cupDelete">Delete cup</button></div>' : ''}
+      </div>
+      ${cup.championName ? `
+        <div class="champion">
+          ${avatarEl(cup.championName, 48)}
+          <div>
+            <div class="champion-label">Champion</div>
+            <div class="champion-name">${esc(cup.championName)}</div>
+            ${champRow ? `<div class="cup-card-meta">${champRow.wins} wins from ${champRow.played} &middot; BD ${signed(champRow.ballDiff)}</div>` : ''}
+          </div>
+        </div>` : ''}
+      <div id="fxEditorSlot">${editorView(cup)}</div>
+      ${cup.format === 'roundrobin' ? rrView(cup) : `<div class="card bracket-card"><div class="bracket-scroll">${bracketView(cup)}</div></div>`}`;
+
+    const s = detail.querySelector('.bracket-scroll');
+    if (s) {
+      if (keepScroll !== null) s.scrollLeft = keepScroll;
+      const edge = () => s.classList.toggle('is-overflow', s.scrollLeft + s.clientWidth < s.scrollWidth - 4);
+      s.addEventListener('scroll', edge, { passive: true });
+      edge();
+    }
+  }
+
+  function slotRow(cup, f, slot, feedId, byId) {
+    if (slot.pending) {
+      const src = byId.get(feedId);
+      const take = slot.pending.startsWith('Winner') ? 'Winner' : 'Loser';
+      const known = src && !src.a.pending && !src.b.pending && !src.a.bye && !src.b.bye;
+      const drop = f.bracket !== 'GF' && src.bracket !== f.bracket;
+      const label = known
+        ? `${take} of ${esc(firstName(src.a.name))} v ${esc(firstName(src.b.name))}`
+        : drop ? `Loser of ${roundName(cup, src.bracket, src.round).toLowerCase()}` : 'To be decided';
+      return `<div class="fx-row is-pending" title="${esc(slot.pending)}"><span class="fx-ph"></span><span class="fx-name">${label}</span></div>`;
+    }
+    if (slot.bye) return `<div class="fx-row is-pending"><span class="fx-ph"></span><span class="fx-name">Bye</span></div>`;
+    const won = f.winnerId === slot.id;
+    const cls = f.state === 'done' ? (won ? ' is-winner' : ' is-loser') : '';
+    const champ = won && onChampPath(cup, f) ? ' is-champ' : '';
+    const score = f.state === 'done' ? `<span class="fx-score">${won ? signed(f.ballsLeft) : signed(-f.ballsLeft)}</span>` : '';
+    return `<div class="fx-row${cls}${champ}"><span class="fx-seed">${slot.seed || ''}</span>${avatarEl(slot.name, 20)}<span class="fx-name">${esc(slot.name)}</span>${score}</div>`;
+  }
+
+  function bracketView(cup) {
+    const byId = new Map(cup.fixtures.map(f => [f.id, f]));
+    const pos = new Map();
+    const labels = [];
+    const colX = r => (r - 1) * (FX.w + FX.col);
+    const double = cup.format === 'double';
+    let top = 0;
+    let width = 0;
+
+    const placeSection = (bracket, heading) => {
+      const list = cup.fixtures.filter(f => f.bracket === bracket);
+      if (!list.length) return;
+      if (heading) { labels.push(`<div class="bracket-section" style="top:${top}px">${heading}</div>`); top += FX.section; }
+      const rounds = [...new Set(list.map(f => f.round))];
+      rounds.forEach(r => labels.push(`<div class="bracket-round" style="left:${colX(r)}px;top:${top}px">${roundName(cup, bracket, r)}</div>`));
+      const cardsTop = top + FX.label;
+      let bottom = cardsTop;
+      for (const f of list) {
+        const same = f.feeds.filter(id => id && id.startsWith(bracket + '-')).map(id => pos.get(id));
+        const y = same.length ? same.reduce((s, p) => s + p.y, 0) / same.length : cardsTop + f.index * (FX.h + FX.gap);
+        pos.set(f.id, { x: colX(f.round), y });
+        bottom = Math.max(bottom, y + FX.h);
+        width = Math.max(width, colX(f.round) + FX.w);
+      }
+      top = bottom + FX.between;
+    };
+
+    placeSection('W', double ? 'Winners bracket' : '');
+    placeSection('L', 'Losers bracket');
+    const gf = byId.get('GF-r1-m0');
+    if (gf) {
+      const feeders = [...new Set(gf.feeds)].map(id => pos.get(id));
+      const y = feeders.reduce((s, p) => s + p.y, 0) / feeders.length;
+      const x = width + FX.col * 1.25;
+      pos.set(gf.id, { x, y });
+      labels.push(`<div class="bracket-round" style="left:${x}px;top:${y - 22}px">Grand final</div>`);
+      width = x + FX.w;
+    }
+    const height = top - FX.between;
+
+    const lines = [];
+    for (const f of cup.fixtures) {
+      const q = pos.get(f.id);
+      for (const id of new Set(f.feeds)) {
+        if (!id || !(f.bracket === 'GF' || id.startsWith(f.bracket + '-'))) continue;
+        const p = pos.get(id);
+        const x1 = p.x + FX.w, y1 = p.y + FX.h / 2, y2 = q.y + FX.h / 2;
+        const mx = q.x - (f.bracket === 'GF' ? FX.col * 0.75 : FX.col / 2);
+        const champ = onChampPath(cup, byId.get(id)) && onChampPath(cup, f);
+        lines.push({ champ, d: `M${x1} ${y1}H${mx}V${y2}H${q.x}` });
+      }
+    }
+    lines.sort((a, b) => a.champ - b.champ);
+
+    const cards = cup.fixtures.map(f => {
+      const p = pos.get(f.id);
+      const clickable = (f.state === 'ready' && token) || (f.state === 'done' && role === 'admin');
+      const cls = `fx fx-${f.state}${cupState.open === f.id ? ' is-open' : ''}`;
+      const style = `left:${p.x}px;top:${p.y}px;width:${FX.w}px`;
+      const body = slotRow(cup, f, f.a, f.feeds[0], byId) + slotRow(cup, f, f.b, f.feeds[1], byId);
+      return clickable
+        ? `<button type="button" class="${cls}" style="${style}" data-fx="${f.id}" aria-label="${f.state === 'ready' ? 'Record result' : 'Edit result'}, ${roundName(cup, f.bracket, f.round)}">${body}</button>`
+        : `<div class="${cls}" style="${style}">${body}</div>`;
+    }).join('');
+
+    return `
+      <div class="bracket" style="width:${width}px;height:${height}px">
+        <svg width="${width}" height="${height}" aria-hidden="true">${lines.map(l => `<path class="bracket-line${l.champ ? ' is-champ' : ''}" d="${l.d}"/>`).join('')}</svg>
+        ${labels.join('')}
+        ${cards}
+      </div>`;
+  }
+
+  function rrView(cup) {
+    const pair = new Map();
+    for (const f of cup.fixtures) { pair.set(`${f.a.id}|${f.b.id}`, f); pair.set(`${f.b.id}|${f.a.id}`, f); }
+    const complete = cup.status === 'complete';
+
+    const tableRows = cup.table.map(r => `
+      <tr>
+        <td class="rank-badge-cell${complete && r.rank === 1 ? ' rank-top' : ''}"><span class="rank-number">${r.rank}</span></td>
+        <td><div class="player-cell">${avatarEl(r.name, 26)}<span class="player-name">${esc(r.name)}</span></div></td>
+        <td class="rr-num">${r.played}</td>
+        <td class="rr-num">${r.wins}</td>
+        <td class="rr-num">${r.losses}</td>
+        <td class="rr-num">${signed(r.ballDiff)}</td>
+      </tr>`).join('');
+
+    const seeds = cup.seeds;
+    const head = seeds.map(s => `<th title="${esc(s.name)}">${avatarEl(s.name, 24)}</th>`).join('');
+    const body = seeds.map(row => `
+      <tr>
+        <th class="xt-row" scope="row">${esc(firstName(row.name))}</th>
+        ${seeds.map(col => {
+          if (row.id === col.id) return '<td><span class="xt-cell self"></span></td>';
+          const f = pair.get(`${row.id}|${col.id}`);
+          if (!f) return '<td><span class="xt-cell"></span></td>';
+          const vs = `${esc(row.name)} v ${esc(col.name)}`;
+          if (f.state === 'done') {
+            const won = f.winnerId === row.id;
+            const text = `${won ? 'W' : 'L'} ${won ? signed(f.ballsLeft) : signed(-f.ballsLeft)}`;
+            const cls = `xt-cell ${won ? 'win' : 'loss'}`;
+            return role === 'admin'
+              ? `<td><button type="button" class="${cls}" data-fx="${f.id}" title="${vs}">${text}</button></td>`
+              : `<td><span class="${cls}" title="${vs}">${text}</span></td>`;
+          }
+          if (f.state === 'ready' && token) return `<td><button type="button" class="xt-cell xt-play" data-fx="${f.id}" aria-label="Record ${vs}" title="${vs}">Play</button></td>`;
+          return `<td><span class="xt-cell" title="${vs}">&middot;</span></td>`;
+        }).join('')}
+      </tr>`).join('');
+
+    return `
+      <div class="rr-layout">
+        <div class="card card-table">
+          <p class="card-title">Table</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Player</th><th>P</th><th>W</th><th>L</th><th title="Ball difference">BD</th></tr></thead>
+              <tbody>${tableRows}</tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card card-table">
+          <p class="card-title">Every frame</p>
+          <div class="xt-wrap">
+            <table class="xt">
+              <thead><tr><th></th>${head}</tr></thead>
+              <tbody>${body}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function editorView(cup) {
+    const f = cupState.open && cup.fixtures.find(x => x.id === cupState.open);
+    if (!f || !(f.state === 'ready' || (f.state === 'done' && role === 'admin'))) return '';
+    const where = roundName(cup, f.bracket, f.round);
+    if (f.state === 'done') {
+      const w = f.winnerId === f.a.id ? f.a : f.b;
+      const l = f.winnerId === f.a.id ? f.b : f.a;
+      return `
+        <div class="fx-editor">
+          <div class="fx-editor-title">${where} &middot; ${esc(w.name)} beat ${esc(l.name)}, ${f.ballsLeft} ball${f.ballsLeft === 1 ? '' : 's'} left</div>
+          <div class="fx-editor-foot">
+            <span class="cup-form-note">Undo only works while no later frame depends on this one.</span>
+            <div class="cup-form-actions">
+              <button type="button" class="btn btn-secondary btn-sm" data-fx-close>Close</button>
+              <button type="button" class="btn btn-danger btn-sm" id="fxUndo">Undo result</button>
+            </div>
+          </div>
+        </div>`;
+    }
+    const pick = s => `<button type="button" class="chip" data-win="${s.id}" aria-pressed="${cupState.winner === s.id}">${avatarEl(s.name, 30)}${esc(s.name)}</button>`;
+    const balls = [0, 1, 2, 3, 4, 5, 6, 7].map(n =>
+      `<button type="button" class="ball-btn ball-${n}${cupState.balls === n ? ' selected' : ''}" data-cupballs="${n}">${n}</button>`).join('');
+    return `
+      <div class="fx-editor">
+        <div class="fx-editor-title">${where} &middot; who won?</div>
+        <div class="fx-pick">${pick(f.a)}${pick(f.b)}</div>
+        <div>
+          <div class="field-label" style="margin:0 0 10px">Balls left for the loser</div>
+          <div class="fx-balls">${balls}</div>
+        </div>
+        <div class="fx-editor-foot">
+          <span class="cup-form-note">Cup frames stay out of the ladder.</span>
+          <div class="cup-form-actions">
+            <button type="button" class="btn btn-secondary btn-sm" data-fx-close>Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" id="fxSave"${cupState.winner && cupState.balls !== null ? '' : ' disabled'}>Save result</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function refreshEditor() {
+    const cup = cupState.cup;
+    document.getElementById('fxEditorSlot').innerHTML = editorView(cup);
+    document.querySelectorAll('#cupDetail [data-fx]').forEach(el => el.classList.toggle('is-open', el.dataset.fx === cupState.open));
+  }
+
+  document.getElementById('cupDetail').addEventListener('click', async e => {
+    const cup = cupState.cup;
+    const t = e.target;
+    if (t.closest('#cupBack')) return closeCup();
+
+    const fx = t.closest('[data-fx]');
+    if (fx) {
+      cupState.open = cupState.open === fx.dataset.fx ? null : fx.dataset.fx;
+      cupState.winner = null; cupState.balls = null;
+      refreshEditor();
+      if (cupState.open) document.getElementById('fxEditorSlot').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return;
+    }
+    if (t.closest('[data-fx-close]')) { cupState.open = null; return refreshEditor(); }
+
+    const win = t.closest('[data-win]');
+    if (win) { cupState.winner = win.dataset.win; return refreshEditor(); }
+    const ball = t.closest('[data-cupballs]');
+    if (ball) { cupState.balls = Number(ball.dataset.cupballs); return refreshEditor(); }
+
+    if (t.closest('#fxSave')) {
+      t.closest('#fxSave').disabled = true;
+      try {
+        const next = await api('POST', `/api/cups/${cup.id}/results`, { fixtureId: cupState.open, winnerId: cupState.winner, ballsLeft: cupState.balls });
+        cupState.open = null;
+        renderCupDetail(next);
+        toast(next.status === 'complete' && cup.status !== 'complete' ? `${next.championName} wins ${next.name}` : 'Result saved');
+      } catch (err) { toast(err.message, 'error'); refreshEditor(); }
+      return;
+    }
+    if (t.closest('#fxUndo')) {
+      try {
+        const next = await api('DELETE', `/api/cups/${cup.id}/results/${cupState.open}`);
+        cupState.open = null;
+        renderCupDetail(next);
+        toast('Result undone', 'info');
+      } catch (err) { toast(err.message, 'error'); }
+      return;
+    }
+    if (t.closest('#cupDelete')) {
+      if (!confirm(`Delete ${cup.name}? Every result in it goes too.`)) return;
+      try { await api('DELETE', `/api/cups/${cup.id}`); toast('Cup deleted', 'info'); closeCup(); }
+      catch (err) { toast(err.message, 'error'); }
+    }
   });
 
   // --- INIT ---

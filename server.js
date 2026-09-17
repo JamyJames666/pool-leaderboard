@@ -3,6 +3,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const cups = require('./cups');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,8 +28,13 @@ if (!fs.existsSync(DB_PATH)) {
 }
 
 function readDB() {
-  return JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+  const db = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+  db.cups ||= [];
+  return db;
 }
+
+// A frame is worth the loser's remaining balls, plus to the winner and minus to the loser.
+const ballsOf = m => (Number.isInteger(m.ballsLeft) ? m.ballsLeft : 0);
 
 function writeDB(data) {
   fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
@@ -94,7 +100,7 @@ function seedFrom(previousElo) {
 
 function rankRows(rows) {
   return rows
-    .sort((a, b) => b.elo - a.elo || b.wins - a.wins || a.name.localeCompare(b.name))
+    .sort((a, b) => b.elo - a.elo || b.ballDiff - a.ballDiff || b.wins - a.wins || a.name.localeCompare(b.name))
     .map((r, i) => ({ ...r, rank: i + 1 }));
 }
 
@@ -115,7 +121,7 @@ function computeSeasons(db) {
 
   for (const key of keys) {
     const stats = new Map(db.players.map(p => [p.id, {
-      elo: seedFrom(carried.get(p.id)), wins: 0, losses: 0, form: [], lastDelta: null,
+      elo: seedFrom(carried.get(p.id)), wins: 0, losses: 0, ballDiff: 0, form: [], lastDelta: null,
     }]));
 
     for (const m of buckets.get(key)) {
@@ -123,8 +129,8 @@ function computeSeasons(db) {
       const l = stats.get(m.loserId);
       if (!w || !l) continue;
       const change = calcEloChange(w.elo, l.elo);
-      w.elo += change; w.wins++; w.form.push('W'); w.lastDelta = change;
-      l.elo = Math.max(FLOOR_ELO, l.elo - change); l.losses++; l.form.push('L'); l.lastDelta = -change;
+      w.elo += change; w.wins++; w.ballDiff += ballsOf(m); w.form.push('W'); w.lastDelta = change;
+      l.elo = Math.max(FLOOR_ELO, l.elo - change); l.losses++; l.ballDiff -= ballsOf(m); l.form.push('L'); l.lastDelta = -change;
     }
 
     const previous = standings.get(keys[keys.indexOf(key) - 1]);
@@ -137,7 +143,7 @@ function computeSeasons(db) {
         const games = st.wins + st.losses;
         return {
           id: p.id, name: p.name, elo: st.elo, wins: st.wins, losses: st.losses,
-          games, winRate: Math.round(st.wins / games * 100),
+          ballDiff: st.ballDiff, games, winRate: Math.round(st.wins / games * 100),
           form: st.form.slice(-5), lastDelta: st.lastDelta,
           provisional: games < PROVISIONAL_GAMES,
         };
@@ -156,15 +162,18 @@ function computeSeasons(db) {
 
 function allTimeStandings(db) {
   const form = new Map(db.players.map(p => [p.id, []]));
+  const diff = new Map(db.players.map(p => [p.id, 0]));
   for (const m of db.matches) {
     form.get(m.winnerId)?.push('W');
     form.get(m.loserId)?.push('L');
+    if (diff.has(m.winnerId)) diff.set(m.winnerId, diff.get(m.winnerId) + ballsOf(m));
+    if (diff.has(m.loserId)) diff.set(m.loserId, diff.get(m.loserId) - ballsOf(m));
   }
   return rankRows(db.players.map(p => {
     const games = p.wins + p.losses;
     return {
       id: p.id, name: p.name, elo: p.elo, wins: p.wins, losses: p.losses,
-      games, winRate: games ? Math.round(p.wins / games * 100) : null,
+      ballDiff: diff.get(p.id), games, winRate: games ? Math.round(p.wins / games * 100) : null,
       form: form.get(p.id).slice(-5), lastDelta: null,
       provisional: false, prevRank: null, rankChange: null,
     };
@@ -336,7 +345,12 @@ app.get('/api/leaderboard', (req, res) => {
   const db = readDB();
   const { season, key } = resolveSeason(db, req.query.season);
   const rows = key === 'all' ? allTimeStandings(db) : season.standings.get(key);
+  const prevKey = key === 'all' ? null : season.keys[season.keys.indexOf(key) - 1];
+  const prevRows = prevKey ? season.standings.get(prevKey) : null;
   res.json({
+    previousSeason: prevRows && prevRows.length
+      ? { key: prevKey, label: seasonLabel(prevKey), top3: prevRows.slice(0, 3).map(r => ({ id: r.id, name: r.name, rank: r.rank, elo: r.elo, ballDiff: r.ballDiff, wins: r.wins, losses: r.losses })) }
+      : null,
     season: key,
     label: key === 'all' ? 'All time' : seasonLabel(key),
     current: key === season.currentKey,
@@ -345,6 +359,99 @@ app.get('/api/leaderboard', (req, res) => {
     carryover: SEASON_CARRYOVER,
     standings: rows,
   });
+});
+
+// --- CUPS ---
+// Cup frames never touch db.matches or ELO. They live only inside their cup.
+
+function playersById(db) {
+  return new Map(db.players.map(p => [p.id, p]));
+}
+
+function cupSummary(db, cup) {
+  const r = cups.resolveCup(cup, playersById(db));
+  const leader = r.table ? r.table[0] : null;
+  return {
+    id: r.id, name: r.name, format: r.format, seasonKey: r.seasonKey, seasonLabel: seasonLabel(r.seasonKey),
+    createdAt: r.createdAt, players: r.seeds.length, progress: r.progress, status: r.status,
+    championId: r.championId, championName: r.championName,
+    leaderName: r.status === 'live' && leader && leader.played ? leader.name : null,
+  };
+}
+
+app.get('/api/cups', (_req, res) => {
+  const db = readDB();
+  const list = db.cups.map(c => cupSummary(db, c))
+    .sort((a, b) => (a.status === b.status ? 0 : a.status === 'live' ? -1 : 1) || b.createdAt.localeCompare(a.createdAt));
+  res.json(list);
+});
+
+app.get('/api/cups/:id', (req, res) => {
+  const db = readDB();
+  const cup = db.cups.find(c => c.id === req.params.id);
+  if (!cup) return res.status(404).json({ error: 'Cup not found' });
+  res.json({ ...cups.resolveCup(cup, playersById(db)), seasonLabel: seasonLabel(cup.seasonKey) });
+});
+
+app.post('/api/cups', requireAuth, (req, res) => {
+  const { format } = req.body;
+  if (!cups.FORMATS.includes(format)) return res.status(400).json({ error: 'Pick single elimination, double elimination or round robin' });
+  const db = readDB();
+  const known = playersById(db);
+  const ids = [...new Set(Array.isArray(req.body.playerIds) ? req.body.playerIds : [])].filter(id => known.has(id));
+  if (ids.length < 2) return res.status(400).json({ error: 'A cup needs at least 2 players' });
+
+  const { standings, currentKey } = computeSeasons(db);
+  const seasonElo = new Map((standings.get(currentKey) || []).map(r => [r.id, r.elo]));
+  const seeds = ids.sort((a, b) =>
+    (seasonElo.get(b) ?? START_ELO) - (seasonElo.get(a) ?? START_ELO) ||
+    known.get(b).elo - known.get(a).elo ||
+    known.get(a).name.localeCompare(known.get(b).name));
+
+  const name = req.body.name?.trim() || `${seasonLabel(currentKey)} Cup`;
+  const cup = { id: genId(), name: name.slice(0, 60), seasonKey: currentKey, format, seeds, results: {}, createdAt: new Date().toISOString() };
+  db.cups.push(cup);
+  writeDB(db);
+  res.json({ ...cups.resolveCup(cup, known), seasonLabel: seasonLabel(currentKey) });
+});
+
+app.post('/api/cups/:id/results', requireAuth, (req, res) => {
+  const { fixtureId, winnerId } = req.body;
+  const balls = Number(req.body.ballsLeft);
+  if (!Number.isInteger(balls) || balls < 0 || balls > 7) return res.status(400).json({ error: 'Balls left must be 0 to 7' });
+  const db = readDB();
+  const cup = db.cups.find(c => c.id === req.params.id);
+  if (!cup) return res.status(404).json({ error: 'Cup not found' });
+  const fixture = cups.resolveCup(cup, playersById(db)).fixtures.find(f => f.id === fixtureId);
+  if (!fixture) return res.status(404).json({ error: 'Fixture not found' });
+  if (fixture.state !== 'ready') return res.status(400).json({ error: fixture.state === 'done' ? 'That frame already has a result' : 'That frame is not ready to play yet' });
+  if (winnerId !== fixture.a.id && winnerId !== fixture.b.id) return res.status(400).json({ error: 'Winner must be one of the two players' });
+
+  cup.results[fixtureId] = { winnerId, ballsLeft: balls, playedAt: new Date().toISOString() };
+  writeDB(db);
+  res.json({ ...cups.resolveCup(cup, playersById(db)), seasonLabel: seasonLabel(cup.seasonKey) });
+});
+
+app.delete('/api/cups/:id/results/:fixtureId', requireAdmin, (req, res) => {
+  const db = readDB();
+  const cup = db.cups.find(c => c.id === req.params.id);
+  if (!cup) return res.status(404).json({ error: 'Cup not found' });
+  if (!cup.results[req.params.fixtureId]) return res.status(404).json({ error: 'No result to undo' });
+  if (!cups.canUndo(cup, req.params.fixtureId)) {
+    return res.status(400).json({ error: 'A later frame depends on this result. Undo that one first' });
+  }
+  delete cup.results[req.params.fixtureId];
+  writeDB(db);
+  res.json({ ...cups.resolveCup(cup, playersById(db)), seasonLabel: seasonLabel(cup.seasonKey) });
+});
+
+app.delete('/api/cups/:id', requireAdmin, (req, res) => {
+  const db = readDB();
+  const idx = db.cups.findIndex(c => c.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Cup not found' });
+  db.cups.splice(idx, 1);
+  writeDB(db);
+  res.json({ ok: true });
 });
 
 app.listen(PORT, () => {
