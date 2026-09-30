@@ -386,6 +386,19 @@
       white-space: nowrap;
     }
 
+    .qualify-note {
+      font-size: 13.5px; color: var(--ink-2);
+      margin: 0 0 14px; max-width: 70ch;
+    }
+    .qualify-split td {
+      height: 40px; padding-top: 14px;
+      font-size: 12px; font-weight: 500; letter-spacing: .02em;
+      color: var(--ink-3); background: var(--ground);
+    }
+    tbody tr.qualify-split:hover { background: var(--ground); }
+    tr.is-unqualified .player-name, tr.is-unqualified .elo-val { color: var(--ink-2); font-weight: 400; }
+    tr.is-unqualified .rank-number { color: var(--ink-3); }
+
     .elo-cell { white-space: nowrap; }
     .elo-val { font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.018em; }
     .delta { font-size: 12.5px; font-weight: 500; margin-left: 7px; font-variant-numeric: tabular-nums; }
@@ -1009,6 +1022,8 @@
         <ol class="podium-row" id="podiumRow"></ol>
       </section>
 
+      <p class="qualify-note" id="qualifyNote" hidden></p>
+
       <div class="card card-table">
         <div class="table-wrap">
           <table>
@@ -1489,20 +1504,27 @@
       updateSeasonHeader(payload);
       updateLeaderboardSummary(payload, matches);
       renderPodium(payload.previousSeason);
+      renderQualifyNote(payload);
       if (!rows.length) {
         tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><strong>Nothing played in ${esc(payload.label)}</strong>Record a result and the season opens.</div></td></tr>`;
         return;
       }
+      let splitDone = false;
       tbody.innerHTML = rows.map(p => {
         const form = [...Array(5)].map((_, i) => {
           const r = p.form[i];
           return r ? `<div class="form-dot ${r}" title="${r === 'W' ? 'Win' : 'Loss'}"></div>` : `<div class="form-dot empty"></div>`;
         }).join('');
         const wrText = p.winRate !== null ? p.winRate + '%' : '-';
-        const tag = p.provisional ? '<span class="provisional-tag">Provisional</span>' : '';
-        return `
-          <tr class="rank-row-${p.rank}">
-            <td class="rank-badge-cell${p.rank <= 3 ? ' rank-top' : ''}"><span class="rank-number">${p.rank}</span></td>
+        const tag = p.qualified ? '' : `<span class="provisional-tag">${p.games} of ${p.gamesNeeded} frames</span>`;
+        let split = '';
+        if (!p.qualified && !splitDone) {
+          splitDone = true;
+          split = `<tr class="qualify-split"><td colspan="8">Not yet qualified, ${p.gamesNeeded} frames needed this season</td></tr>`;
+        }
+        return split + `
+          <tr class="rank-row-${p.rank}${p.qualified ? '' : ' is-unqualified'}">
+            <td class="rank-badge-cell${p.qualified && p.rank <= 3 ? ' rank-top' : ''}"><span class="rank-number">${p.qualified ? p.rank : '&ndash;'}</span></td>
             <td class="move-cell">${moveCell(p)}</td>
             <td>
               <div class="player-cell"><span class="player-name">${esc(p.name)}</span>${tag}</div>
@@ -1545,6 +1567,15 @@
     el.hidden = false;
   }
 
+  function renderQualifyNote(payload) {
+    const el = document.getElementById('qualifyNote');
+    if (!payload.qualify) { el.hidden = true; return; }
+    const { games, next } = payload.qualify;
+    const rise = next ? ` From ${esc(next.label)} it goes up to ${next.games}.` : '';
+    el.innerHTML = `Play ${games} frames in a season and your rating takes a ranked place. Below that you sit under the ranked players whatever your ELO.${rise}`;
+    el.hidden = false;
+  }
+
   function deltaEl(d) {
     if (d === null || d === undefined) return '';
     const up = d > 0;
@@ -1575,8 +1606,13 @@
         : 'This season is still open. Nobody has played a frame.';
       return;
     }
+    if (!leader.qualified) {
+      const need = payload.qualify ? payload.qualify.games : 0;
+      lede.innerHTML = `Nobody has hit ${need} frames yet. <strong>${esc(leader.name)}</strong> tops the unranked list on ${leader.elo}.`;
+      return;
+    }
     const runner = payload.standings[1];
-    const margin = runner ? leader.elo - runner.elo : null;
+    const margin = runner && runner.qualified ? leader.elo - runner.elo : null;
     const tail = margin === null ? 'the only rated player so far'
       : margin === 0 ? `level with <strong>${esc(runner.name)}</strong> at the top`
       : `${margin} clear of <strong>${esc(runner.name)}</strong>`;

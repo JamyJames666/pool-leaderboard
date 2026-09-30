@@ -13,7 +13,12 @@ const DB_PATH = path.join(__dirname, 'data', 'db.json');
 
 const START_ELO = 1000;
 const FLOOR_ELO = 100;
-const PROVISIONAL_GAMES = 5;
+// Frames a player needs in a season before their rating holds a ranked place.
+const QUALIFY_RULES = [
+  { from: '0000-Q0', games: 10 },
+  { from: '2026-Q4', games: 12 },
+];
+const qualifyGames = key => QUALIFY_RULES.filter(r => key >= r.from).pop().games;
 // 0 = hard reset to START_ELO every quarter, 1 = no reset at all
 const SEASON_CARRYOVER = 0;
 
@@ -85,6 +90,11 @@ function seasonLabel(key) {
   return `Q${q} ${year}`;
 }
 
+function nextSeasonKey(key) {
+  const [year, q] = key.split('-Q').map(Number);
+  return q === 4 ? `${year + 1}-Q1` : `${year}-Q${q + 1}`;
+}
+
 function seasonBounds(key) {
   const [year, q] = key.split('-Q').map(Number);
   return {
@@ -100,7 +110,7 @@ function seedFrom(previousElo) {
 
 function rankRows(rows) {
   return rows
-    .sort((a, b) => b.elo - a.elo || b.ballDiff - a.ballDiff || b.wins - a.wins || a.name.localeCompare(b.name))
+    .sort((a, b) => Number(b.qualified) - Number(a.qualified) || b.elo - a.elo || b.ballDiff - a.ballDiff || b.wins - a.wins || a.name.localeCompare(b.name))
     .map((r, i) => ({ ...r, rank: i + 1 }));
 }
 
@@ -136,6 +146,7 @@ function computeSeasons(db) {
     const previous = standings.get(keys[keys.indexOf(key) - 1]);
     const prevRankOf = new Map((previous || []).map(r => [r.id, r.rank]));
 
+    const needed = qualifyGames(key);
     const rows = rankRows(db.players
       .filter(p => stats.get(p.id).wins + stats.get(p.id).losses > 0)
       .map(p => {
@@ -145,7 +156,7 @@ function computeSeasons(db) {
           id: p.id, name: p.name, elo: st.elo, wins: st.wins, losses: st.losses,
           ballDiff: st.ballDiff, games, winRate: Math.round(st.wins / games * 100),
           form: st.form.slice(-5), lastDelta: st.lastDelta,
-          provisional: games < PROVISIONAL_GAMES,
+          gamesNeeded: needed, qualified: games >= needed,
         };
       }))
       .map(r => {
@@ -175,7 +186,7 @@ function allTimeStandings(db) {
       id: p.id, name: p.name, elo: p.elo, wins: p.wins, losses: p.losses,
       ballDiff: diff.get(p.id), games, winRate: games ? Math.round(p.wins / games * 100) : null,
       form: form.get(p.id).slice(-5), lastDelta: null,
-      provisional: false, prevRank: null, rankChange: null,
+      gamesNeeded: null, qualified: true, prevRank: null, rankChange: null,
     };
   }));
 }
@@ -357,6 +368,12 @@ app.get('/api/leaderboard', (req, res) => {
     ...(key === 'all' ? {} : seasonBounds(key)),
     matches: key === 'all' ? db.matches.length : season.buckets.get(key).length,
     carryover: SEASON_CARRYOVER,
+    qualify: key === 'all' ? null : {
+      games: qualifyGames(key),
+      next: qualifyGames(nextSeasonKey(key)) === qualifyGames(key)
+        ? null
+        : { label: seasonLabel(nextSeasonKey(key)), games: qualifyGames(nextSeasonKey(key)) },
+    },
     standings: rows,
   });
 });
