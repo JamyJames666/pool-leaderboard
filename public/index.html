@@ -649,8 +649,14 @@
     .player-card-top { display: flex; align-items: center; gap: 13px; }
     .player-card-info { min-width: 0; flex: 1; }
     .player-card-name { font-size: 15.5px; font-weight: 500; letter-spacing: -0.016em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .player-card-stats { font-size: 13px; color: var(--ink-2); margin-top: 2px; font-variant-numeric: tabular-nums; }
-    .player-card-elo { font-size: 21px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.026em; margin-left: auto; }
+    .player-card-stats {
+      font-size: 13px; color: var(--ink-2); margin-top: 2px; font-variant-numeric: tabular-nums;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .player-card-rating { margin-left: auto; text-align: right; flex: none; }
+    .player-card-elo { font-size: 21px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.026em; }
+    .player-card-season { font-size: 11.5px; color: var(--ink-3); white-space: nowrap; margin-top: 1px; }
+    .player-card-rating.is-stale .player-card-elo { color: var(--ink-3); font-weight: 400; }
     .player-card-actions { display: flex; justify-content: flex-end; gap: 6px; }
     .player-card .avatar { width: 40px; height: 40px; font-size: 14px; }
     .edit-inline { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -1319,6 +1325,7 @@
   let token = sessionStorage.getItem('pool_token') || '';
   let role  = sessionStorage.getItem('pool_role')  || '';
   let players = [];
+  const START_ELO = 1000;
   let editingPlayerId = null;
   let resultDismissTimer = null;
   let selectedBalls = null;
@@ -1511,7 +1518,7 @@
       }
       let splitDone = false;
       tbody.innerHTML = rows.map(p => {
-        const form = [...Array(5)].map((_, i) => {
+        const form = [...Array(10)].map((_, i) => {
           const r = p.form[i];
           return r ? `<div class="form-dot ${r}" title="${r === 'W' ? 'Win' : 'Loss'}"></div>` : `<div class="form-dot empty"></div>`;
         }).join('');
@@ -1543,6 +1550,11 @@
     } catch (err) {
       tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><strong>Could not load the ladder</strong>${esc(err.message)}</div></td></tr>`;
     }
+  }
+
+  function currentSeasonLabel() {
+    const d = new Date();
+    return `Q${Math.floor(d.getUTCMonth() / 3) + 1} ${d.getUTCFullYear()}`;
   }
 
   function signed(n) {
@@ -1803,7 +1815,8 @@
     try {
       players = await api('GET', '/api/players');
       document.getElementById('playerCount').textContent = players.length
-        ? `${players.length} player${players.length === 1 ? '' : 's'} on the ladder.` : 'Nobody on the ladder yet.';
+        ? `${players.length} player${players.length === 1 ? '' : 's'} on the ladder. Ratings are ${currentSeasonLabel()}, or the last season a player featured in.`
+        : 'Nobody on the ladder yet.';
       renderPlayerGrid();
     } catch (err) {
       document.getElementById('playerGrid').innerHTML = `<p style="color:var(--loss)">${esc(err.message)}</p>`;
@@ -1816,9 +1829,22 @@
       grid.innerHTML = `<div style="grid-column:1/-1"><div class="empty-state"><strong>No players yet</strong>Add the first name above and the ladder starts.</div></div>`;
       return;
     }
-    grid.innerHTML = [...players].sort((a, b) => b.elo - a.elo).map(p => {
-      const games = p.wins + p.losses;
-      const wr = games > 0 ? Math.round(p.wins / games * 100) + '%' : '-';
+    const standing = p => p.season || p.lastSeason;
+    grid.innerHTML = [...players].sort((a, b) => {
+      const sa = standing(a), sb = standing(b);
+      return Number(!!b.season) - Number(!!a.season)
+        || (sb ? sb.elo : 0) - (sa ? sa.elo : 0)
+        || a.name.localeCompare(b.name);
+    }).map(p => {
+      const st = standing(p);
+      const games = st ? st.games : 0;
+      const wr = games > 0 ? Math.round(st.wins / games * 100) + '%' : '-';
+      const record = st
+        ? `${st.wins}W ${st.losses}L &nbsp;&middot;&nbsp; ${wr} won`
+        : 'No frames played yet';
+      const note = p.season
+        ? esc(p.season.label)
+        : st ? `Last played ${esc(st.label)}` : 'Unrated';
       if (editingPlayerId === p.id) {
         return `<div class="player-card"><div class="edit-inline">
           <input type="text" id="editName-${p.id}" value="${esc(p.name)}" maxlength="40">
@@ -1835,9 +1861,12 @@
           ${avatarEl(p.name, 40)}
           <div class="player-card-info">
             <div class="player-card-name">${esc(p.name)}</div>
-            <div class="player-card-stats">${p.wins}W ${p.losses}L &nbsp;&middot;&nbsp; ${wr} won</div>
+            <div class="player-card-stats">${record}</div>
           </div>
-          <div class="player-card-elo">${p.elo}</div>
+          <div class="player-card-rating${p.season ? '' : ' is-stale'}">
+            <div class="player-card-elo">${st ? st.elo : START_ELO}</div>
+            <div class="player-card-season">${note}</div>
+          </div>
         </div>
         ${adminActions}
       </div>`;
@@ -2076,8 +2105,7 @@
   const firstName = n => String(n).split(' ')[0];
   const framesFor = (format, n) => format === 'roundrobin' ? n * (n - 1) / 2 : format === 'double' ? 2 * n - 2 : n - 1;
   function defaultCupName() {
-    const d = new Date();
-    return `Q${Math.floor(d.getUTCMonth() / 3) + 1} ${d.getUTCFullYear()} Cup`;
+    return `${currentSeasonLabel()} Cup`;
   }
 
   async function loadCups() {

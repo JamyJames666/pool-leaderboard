@@ -11,6 +11,7 @@ const PASSWORD = process.env.PASSWORD || 'pool123';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 const DB_PATH = path.join(__dirname, 'data', 'db.json');
 
+const FORM_LENGTH = 10;
 const START_ELO = 1000;
 const FLOOR_ELO = 100;
 // Frames a player needs in a season before their rating holds a ranked place.
@@ -155,7 +156,7 @@ function computeSeasons(db) {
         return {
           id: p.id, name: p.name, elo: st.elo, wins: st.wins, losses: st.losses,
           ballDiff: st.ballDiff, games, winRate: Math.round(st.wins / games * 100),
-          form: st.form.slice(-5), lastDelta: st.lastDelta,
+          form: st.form.slice(-FORM_LENGTH), lastDelta: st.lastDelta,
           gamesNeeded: needed, qualified: games >= needed,
         };
       }))
@@ -185,7 +186,7 @@ function allTimeStandings(db) {
     return {
       id: p.id, name: p.name, elo: p.elo, wins: p.wins, losses: p.losses,
       ballDiff: diff.get(p.id), games, winRate: games ? Math.round(p.wins / games * 100) : null,
-      form: form.get(p.id).slice(-5), lastDelta: null,
+      form: form.get(p.id).slice(-FORM_LENGTH), lastDelta: null,
       gamesNeeded: null, qualified: true, prevRank: null, rankChange: null,
     };
   }));
@@ -243,7 +244,25 @@ app.post('/api/logout', (req, res) => {
 // --- PLAYERS ---
 
 app.get('/api/players', (_req, res) => {
-  res.json(readDB().players);
+  const db = readDB();
+  const { keys, standings, currentKey } = computeSeasons(db);
+  const rowFor = (key, id) => (standings.get(key) || []).find(r => r.id === id) || null;
+  const slim = (key, r) => ({
+    key, label: seasonLabel(key), elo: r.elo, wins: r.wins, losses: r.losses,
+    games: r.games, qualified: r.qualified, gamesNeeded: r.gamesNeeded,
+  });
+
+  res.json(db.players.map(p => {
+    const current = rowFor(currentKey, p.id);
+    let last = null;
+    if (!current) {
+      for (const key of [...keys].reverse()) {
+        const row = key === currentKey ? null : rowFor(key, p.id);
+        if (row) { last = slim(key, row); break; }
+      }
+    }
+    return { ...p, season: current ? slim(currentKey, current) : null, lastSeason: last };
+  }));
 });
 
 app.post('/api/players', requireAuth, (req, res) => {
