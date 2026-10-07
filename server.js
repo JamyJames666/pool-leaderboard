@@ -23,7 +23,7 @@ const qualifyGames = key => QUALIFY_RULES.filter(r => key >= r.from).pop().games
 // 0 = hard reset to START_ELO every quarter, 1 = no reset at all
 const SEASON_CARRYOVER = 0;
 
-// in-memory sessions: token -> { role, expires }
+// in-memory sessions, token -> { role, expires }
 const sessions = new Map();
 
 if (!fs.existsSync(path.join(__dirname, 'data'))) {
@@ -56,7 +56,7 @@ function calcEloChange(winnerElo, loserElo) {
   return Math.max(1, Math.round(K * (1 - expected)));
 }
 
-// Replay all matches from scratch to keep ELOs consistent after edits/deletes
+// Replay every match from scratch so an edit or a delete can't leave a stale rating.
 function recomputeAllElos(db) {
   for (const p of db.players) {
     p.elo = 1000;
@@ -73,7 +73,7 @@ function recomputeAllElos(db) {
     m.eloChange = change;
     winner.elo += change;
     winner.wins++;
-    loser.elo = Math.max(100, loser.elo - change);
+    loser.elo = Math.max(FLOOR_ELO, loser.elo - change);
     loser.losses++;
   }
 }
@@ -81,9 +81,37 @@ function recomputeAllElos(db) {
 // --- SEASONS ---
 // A season is a calendar quarter derived from match.playedAt. Nothing is stored.
 
+// Quarters turn over on the table's wall clock, not on UTC midnight.
+const SEASON_TZ = process.env.SEASON_TZ || 'Europe/London';
+const TZ_FORMAT = new Intl.DateTimeFormat('en-GB', {
+  timeZone: SEASON_TZ, hour12: false,
+  year: 'numeric', month: '2-digit', day: '2-digit',
+  hour: '2-digit', minute: '2-digit', second: '2-digit',
+});
+
+function tzParts(when) {
+  const raw = Object.fromEntries(TZ_FORMAT.formatToParts(new Date(when)).map(x => [x.type, x.value]));
+  return {
+    year: +raw.year, month: +raw.month, day: +raw.day,
+    hour: +raw.hour % 24, minute: +raw.minute, second: +raw.second,
+  };
+}
+
+function tzOffsetMs(utcMs) {
+  const p = tzParts(utcMs);
+  return Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second) - utcMs;
+}
+
+// Two passes so the result is right on the hour a DST shift lands.
+function instantOfLocal(year, monthIndex, day) {
+  const naive = Date.UTC(year, monthIndex, day);
+  const once = naive - tzOffsetMs(naive);
+  return naive - tzOffsetMs(once);
+}
+
 function seasonKeyOf(when) {
-  const d = new Date(when);
-  return `${d.getUTCFullYear()}-Q${Math.floor(d.getUTCMonth() / 3) + 1}`;
+  const p = tzParts(when);
+  return `${p.year}-Q${Math.floor((p.month - 1) / 3) + 1}`;
 }
 
 function seasonLabel(key) {
@@ -99,8 +127,8 @@ function nextSeasonKey(key) {
 function seasonBounds(key) {
   const [year, q] = key.split('-Q').map(Number);
   return {
-    start: new Date(Date.UTC(year, (q - 1) * 3, 1)).toISOString(),
-    end: new Date(Date.UTC(year, q * 3, 1) - 1).toISOString(),
+    start: new Date(instantOfLocal(year, (q - 1) * 3, 1)).toISOString(),
+    end: new Date(instantOfLocal(year, q * 3, 1) - 1).toISOString(),
   };
 }
 
@@ -128,6 +156,7 @@ function computeSeasons(db) {
 
   const keys = [...buckets.keys()].sort();
   const standings = new Map();
+  const deltas = new Map();
   let carried = new Map();
 
   for (const key of keys) {
@@ -141,7 +170,10 @@ function computeSeasons(db) {
       if (!w || !l) continue;
       const change = calcEloChange(w.elo, l.elo);
       w.elo += change; w.wins++; w.ballDiff += ballsOf(m); w.form.push('W'); w.lastDelta = change;
-      l.elo = Math.max(FLOOR_ELO, l.elo - change); l.losses++; l.ballDiff -= ballsOf(m); l.form.push('L'); l.lastDelta = -change;
+      const floored = Math.max(FLOOR_ELO, l.elo - change);
+      l.lastDelta = floored - l.elo;
+      l.elo = floored; l.losses++; l.ballDiff -= ballsOf(m); l.form.push('L');
+      deltas.set(m.id, change);
     }
 
     const previous = standings.get(keys[keys.indexOf(key) - 1]);
@@ -169,7 +201,7 @@ function computeSeasons(db) {
     carried = new Map([...stats].map(([id, st]) => [id, st.elo]));
   }
 
-  return { keys, buckets, standings, currentKey };
+  return { keys, buckets, standings, deltas, currentKey };
 }
 
 function allTimeStandings(db) {
@@ -304,11 +336,13 @@ app.delete('/api/players/:id', requireAdmin, (req, res) => {
 
 app.get('/api/matches', (req, res) => {
   const db = readDB();
+  const { deltas } = computeSeasons(db);
   const playerMap = Object.fromEntries(db.players.map(p => [p.id, p.name]));
   const wanted = req.query.season && req.query.season !== 'all' ? req.query.season : null;
   const scoped = wanted ? db.matches.filter(m => seasonKeyOf(m.playedAt) === wanted) : db.matches;
   const matches = [...scoped].reverse().map(m => ({
     ...m,
+    eloChange: deltas.get(m.id) ?? m.eloChange,
     winnerName: playerMap[m.winnerId] ?? 'Unknown',
     loserName: playerMap[m.loserId] ?? 'Unknown',
   }));
@@ -340,11 +374,12 @@ app.post('/api/matches', requireAuth, (req, res) => {
   };
   winner.elo += change;
   winner.wins++;
-  loser.elo = Math.max(100, loser.elo - change);
+  loser.elo = Math.max(FLOOR_ELO, loser.elo - change);
   loser.losses++;
   db.matches.push(match);
   writeDB(db);
-  res.json({ match, winner, loser });
+  const seasonChange = computeSeasons(db).deltas.get(match.id) ?? change;
+  res.json({ match: { ...match, eloChange: seasonChange }, winner, loser });
 });
 
 app.delete('/api/matches/:id', requireAdmin, (req, res) => {
@@ -378,8 +413,8 @@ app.get('/api/leaderboard', (req, res) => {
   const prevKey = key === 'all' ? null : season.keys[season.keys.indexOf(key) - 1];
   const prevRows = prevKey ? season.standings.get(prevKey) : null;
   res.json({
-    previousSeason: prevRows && prevRows.length
-      ? { key: prevKey, label: seasonLabel(prevKey), top3: prevRows.slice(0, 3).map(r => ({ id: r.id, name: r.name, rank: r.rank, elo: r.elo, ballDiff: r.ballDiff, wins: r.wins, losses: r.losses })) }
+    previousSeason: prevRows && prevRows.some(r => r.qualified)
+      ? { key: prevKey, label: seasonLabel(prevKey), top3: prevRows.filter(r => r.qualified).slice(0, 3).map(r => ({ id: r.id, name: r.name, rank: r.rank, elo: r.elo, ballDiff: r.ballDiff, wins: r.wins, losses: r.losses })) }
       : null,
     season: key,
     label: key === 'all' ? 'All time' : seasonLabel(key),

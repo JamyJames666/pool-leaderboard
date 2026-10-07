@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carbonpool</title>
+  <title>Carbonpool · Rack up, rank up</title>
+  <meta name="description" content="The office 8-ball ladder. Quarterly ELO seasons, ball difference tie breaks, and a knockout cup every quarter.">
+  <meta name="theme-color" content="#D92A50">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -727,6 +729,7 @@
     }
     .login-title { font-size: 34px; font-weight: 500; letter-spacing: -0.034em; line-height: 1.05; }
     .login-sub { font-size: 14.5px; color: var(--ink-2); margin-top: 8px; }
+    .login-tag { margin-top: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.13em; text-transform: uppercase; color: var(--accent); }
     .login-form { display: flex; flex-direction: column; gap: 12px; margin-top: 26px; }
     .login-form input { width: 100%; text-align: center; }
     .login-error { color: var(--loss); font-size: 13.5px; min-height: 18px; }
@@ -975,6 +978,7 @@
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
     <h1 class="login-title">Carbonpool</h1>
+    <p class="login-tag">Rack up, rank up</p>
     <p class="login-sub">Enter the password to continue</p>
     <form class="login-form" id="loginForm">
       <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
@@ -1315,8 +1319,8 @@
   </main>
 
   <footer class="site-footer">
-    <span>Carbonpool</span>
-    <span>Ratings reset to 1000 at the start of every quarter</span>
+    <span>Carbonpool · Rack up, rank up</span>
+    <span>Every rating resets to 1000 when the quarter turns over</span>
   </footer>
 </div>
 
@@ -1331,7 +1335,6 @@
   let selectedBalls = null;
   let activityRange = '90';
   let selectedSeason = 'current';
-  let seasonsLoaded = false;
 
   // --- SCORE MESSAGES ---
   const SCORE_MESSAGES = {
@@ -1478,7 +1481,8 @@
   const UP_ARROW = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12.5V4M8 4 3.8 8.2M8 4l4.2 4.2"/></svg>';
   const DOWN_ARROW = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5V12M8 12l4.2-4.2M8 12 3.8 7.8"/></svg>';
 
-  function moveCell(row) {
+  function moveCell(row, allTime) {
+    if (allTime || !row.qualified) return '';
     if (row.prevRank === null) return '<span class="move new">NEW</span>';
     if (row.rankChange === 0) return MOVE_FLAT;
     const up = row.rankChange > 0;
@@ -1495,13 +1499,12 @@
       .join('');
     if (selectedSeason === 'current') selectedSeason = seasons.find(sn => sn.current)?.key ?? 'all';
     select.value = selectedSeason;
-    seasonsLoaded = true;
   }
 
   async function loadLeaderboard() {
     const tbody = document.getElementById('leaderboardBody');
     try {
-      if (!seasonsLoaded) await loadSeasons();
+      await loadSeasons();
       const query = `?season=${encodeURIComponent(selectedSeason)}`;
       const [payload, matches] = await Promise.all([
         api('GET', '/api/leaderboard' + query),
@@ -1532,7 +1535,7 @@
         return split + `
           <tr class="rank-row-${p.rank}${p.qualified ? '' : ' is-unqualified'}">
             <td class="rank-badge-cell${p.qualified && p.rank <= 3 ? ' rank-top' : ''}"><span class="rank-number">${p.qualified ? p.rank : '&ndash;'}</span></td>
-            <td class="move-cell">${moveCell(p)}</td>
+            <td class="move-cell">${moveCell(p, payload.season === 'all')}</td>
             <td>
               <div class="player-cell"><span class="player-name">${esc(p.name)}</span>${tag}</div>
             </td>
@@ -1650,9 +1653,6 @@
     else if (payload.season !== 'all' && payload.current) facts.push('no results yet this season');
     document.getElementById('tableSummary').textContent = facts.join(' · ');
     document.getElementById('tableWindow').textContent = seasonWindow(payload);
-    const played = matches.length;
-    document.getElementById('matchCount').textContent =
-      played ? `${played} frame${played === 1 ? '' : 's'} on record.` : 'No frames recorded yet.';
   }
 
   document.getElementById('seasonSelect').addEventListener('change', (e) => {
@@ -2539,7 +2539,7 @@
   });
 
   // --- INIT ---
-  function loadAll() { loadLeaderboard(); loadPlayersForDropdowns(); }
+  function loadAll() { loadLeaderboard(); loadPlayersForDropdowns(); loadCups(); }
 
   function esc(str) {
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');

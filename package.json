@@ -1,7 +1,7 @@
 {
   "name": "pool-leaderboard",
   "version": "1.0.0",
-  "description": "8-ball pool leaderboard with ELO ratings",
+  "description": "Carbonpool, the office 8-ball ladder. Quarterly ELO seasons, ball difference tie breaks and knockout cups.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
