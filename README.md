@@ -11,6 +11,31 @@
 
 ---
 
+<p align="center">
+  <img src="docs/standings.png" alt="The Q4 2026 standings, with last season's podium above the ladder and unqualified players below the split" width="900">
+</p>
+
+<table>
+<tr>
+<td width="50%"><img src="docs/bracket.png" alt="A live double elimination bracket, winners over losers with the grand final at the right"></td>
+<td width="50%"><img src="docs/roundrobin.png" alt="A finished round robin, table on the left and a crosstable of every frame on the right"></td>
+</tr>
+<tr>
+<td align="center"><sub>Double elimination, live. Playable frames are outlined.</sub></td>
+<td align="center"><sub>Round robin, finished. Every frame in one grid.</sub></td>
+</tr>
+<tr>
+<td><img src="docs/cupslist.png" alt="The cups tab listing one cup in progress and two finished"></td>
+<td><img src="docs/mobile.png" alt="The standings on a phone, narrowed to rank, player and ELO" height="430"></td>
+</tr>
+<tr>
+<td align="center"><sub>One cup a quarter, in progress and finished.</sub></td>
+<td align="center"><sub>Phone width drops to rank, player and rating.</sub></td>
+</tr>
+</table>
+
+<p align="center"><sub>Names and results above are a generated demo, not the real ladder.</sub></p>
+
 ## What it is
 
 Two people play a frame. Someone records who won and how many balls the loser left on the table. Everything else is derived from that.

@@ -2289,9 +2289,27 @@
       if (keepScroll !== null) s.scrollLeft = keepScroll;
       const edge = () => s.classList.toggle('is-overflow', s.scrollLeft + s.clientWidth < s.scrollWidth - 4);
       s.addEventListener('scroll', edge, { passive: true });
+      fitBracket(s);
       edge();
     }
   }
+
+  // A whole bracket shrunk to fit beats a full size one with the final off the edge.
+  // Below 0.72 the names stop being readable, so hand back to scrolling instead.
+  function fitBracket(s) {
+    const b = s.querySelector('.bracket');
+    if (!b) return;
+    const k = s.clientWidth / Number(b.dataset.w);
+    const fit = s.clientWidth >= 700 && k < 1 && k >= 0.72;
+    b.style.transformOrigin = 'top left';
+    b.style.transform = fit ? `scale(${k})` : '';
+    s.style.height = fit ? Math.ceil(Number(b.dataset.h) * k) + 'px' : '';
+  }
+
+  window.addEventListener('resize', () => {
+    const s = document.querySelector('.bracket-scroll');
+    if (s) fitBracket(s);
+  });
 
   function slotRow(cup, f, slot, feedId, byId) {
     if (slot.pending) {
@@ -2378,7 +2396,7 @@
     }).join('');
 
     return `
-      <div class="bracket" style="width:${width}px;height:${height}px">
+      <div class="bracket" data-w="${width}" data-h="${height}" style="width:${width}px;height:${height}px">
         <svg width="${width}" height="${height}" aria-hidden="true">${lines.map(l => `<path class="bracket-line${l.champ ? ' is-champ' : ''}" d="${l.d}"/>`).join('')}</svg>
         ${labels.join('')}
         ${cards}
